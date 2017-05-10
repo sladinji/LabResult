@@ -23,11 +23,10 @@ services:
     volumes:
       - .:/labresult
     environment:
-      - VIRTUAL_HOST=demo.blousebrothers.fr
-      - LETSENCRYPT_HOST=demo.blousebrothers.fr
-      - LETSENCRYPT_EMAIL=julien.almarcha@labresult.fr
+      - VIRTUAL_HOST=flask.local
       - VIRTUAL_PORT=5000
-      - VIRTUAL_PROTO=uwsgi
+        #- VIRTUAL_PROTO=uwsgi
+    command: python labresult/run.py dev
 
   lr_worker:
     image: labresult_lr_web

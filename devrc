@@ -1,0 +1,2 @@
+export COMPOSE_PROJECT_NAME=labresult
+export COMPOSE_FILE= docker-compose-dev.yml
