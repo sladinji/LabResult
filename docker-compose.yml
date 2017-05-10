@@ -1,0 +1,44 @@
+version: '2'
+
+volumes:
+  mongodb_data: {}
+
+services:
+  lr_mongodb:
+    image: mongo:3.0
+    volumes:
+      - mongodb_data:/data/db
+
+  lr_rabbitmq:
+    image: rabbitmq
+    environment:
+      - CELERY_BROKER_URL = 'amqp://lr_rabbitmq//'
+      - CELERY_RESULT_BACKEND = 'amqp://lr_rabbitmq//'
+
+  lr_web:
+    build: . 
+    depends_on:
+      - lr_mongodb
+      - lr_rabbitmq
+    volumes:
+      - .:/labresult
+    environment:
+      - VIRTUAL_HOST=flask.local
+      - VIRTUAL_PORT=5000
+      - VIRTUAL_PROTO=uwsgi
+    # command: python labresult/run.py dev
+
+  lr_worker:
+    image: labresult_lr_web
+    depends_on:
+      - lr_mongodb
+      - lr_rabbitmq
+    volumes:
+      - .:/labresult
+    command: python labresult/runcelery.py conf=dev worker -l INFO
+
+
+networks:
+  default:
+    external:
+      name: nginx-proxy

@@ -1,0 +1,12 @@
+flask-admin
+flask-mongoengine
+flask-restful
+flask-wtf
+flask-debugtoolbar
+flask-babelex
+flask-login
+Celery
+pypdf2
+pillow
+eventlet
+pdfquery

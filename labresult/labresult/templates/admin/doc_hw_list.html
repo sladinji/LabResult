@@ -1,0 +1,15 @@
+{% extends 'admin/doc_list.html' %}
+
+{% block body %}
+<div class="panel panel-default margB10">
+  <div class="panel-heading txt20">
+      <i class="flaticon-drawer4"></i> <span class="tbleuLR">Mes documents</span>
+  </div>
+</div>
+{{ super()  }}
+<div class="alert alert-success" role="alert">
+   <h4><span class="flaticon-info28" aria-hidden="true"></span> Conseils d'utilisation</h4>
+   <p class="txtjusti">Vous pouvez retrouver instantannément le document en saisissant le nom du patient, ou le numéro de dossier. Vous avez également la possibilité de supprimer les documents que vous ne souhaitez pas conserver sur le serveur.</p>
+</div>
+<!-- Content ends -->
+{% endblock %}

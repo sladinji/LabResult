@@ -1,0 +1,23 @@
+
+{% macro search_form(input_class="span2") %}
+<form method="GET" action="{{ return_url }}" class="navbar-form navbar-left nomarg nopadd" role="search">
+    {% if sort_column is not none %}
+    <input type="hidden" name="sort" value="{{ sort_column }}">
+    {% endif %}
+    {% if sort_desc %}
+    <input type="hidden" name="desc" value="{{ sort_desc }}">
+    {% endif %}
+    {% if search %}
+    <div class="input-append form-group">
+            <input type="text" name="search" value="{{ search }}" class="{{ input_class }} form-control" placeholder="{{ _gettext('Search') }}">
+            <a href="{{ clear_search_url }}" class="clear add-on">
+                <span class="glyphicon glyphicon-remove"></span>
+            </a>
+    </div>
+    {% else %}
+    <div class="form-group">
+        <input type="text" name="search" value="" class="{{ input_class }} form-control" placeholder="{{ _gettext('Search') }}">
+    </div>
+    {% endif %}
+</form>
+{% endmacro %}

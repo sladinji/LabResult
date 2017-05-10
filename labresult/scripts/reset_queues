@@ -1,0 +1,7 @@
+#!/bin/bash
+# Reset RabbitMQ conf to remove all temporary queues
+# Should no be used since temporary queues are remove via TTL
+
+rabbitmqctl stop_app
+rabbitmqctl reset
+rabbitmqctl start_app

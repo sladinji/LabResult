@@ -1,0 +1,147 @@
+{
+	"index": {
+		"key": "index"
+		, "name": ""
+		, "menu": {
+			"index": true
+		}
+	}
+	, "carousel-fit": {
+		"key": "carousel-fit"
+		, "name": "carousel-fit"
+		, "menu": {
+			"carouselFit": true
+		}
+		, "submenus": {
+			"demo": "Demo"
+			, "usage": "Usage"
+			, "events": "Events"
+		}
+		, "carousels": {
+			"default": {
+				"indicators": true
+				, "controls": true
+			}
+		}
+	}
+	, "modal-carousel": {
+		"key": "modal-carousel"
+		, "name": "modal-carousel"
+		, "menu": {
+			"modalCarousel": true
+		}
+		, "submenus": {
+			"demo": "Demo"
+			, "usage": "Usage"
+		}
+		, "modals": {
+			"default": {
+				"title": true
+				, "footer": true
+			}
+			, "fullscreen": {
+				"title": true
+				, "footer": true
+				, "fullscreen": true
+				, "fullscreenForced": true
+				, "id": "myModalFullscreen"
+			}
+		}
+		, "carousels": {
+			"default": {
+				"indicators": true
+				, "controls": true
+			}
+		}
+	}
+	, "modal-fullscreen": {
+		"key": "modal-fullscreen"
+		, "name": "modal-fullscreen"
+		, "menu": {
+			"modalFullscreen": true
+		}
+		, "submenus": {
+			"demo": "Demo"
+			, "usage": "Usage"
+		}
+		, "modals": {
+			"default": {
+				"title": true
+				, "footer": true
+			}
+			, "fullscreen": {
+				"title": true
+				, "footer": true
+				, "fullscreen": true
+				, "id": "myModalFullscreen"
+			}
+			, "fullscreenFooterBottom": {
+				"title": true
+				, "footer": true
+				, "fullscreen": true
+				, "footerBottom": true
+				, "id": "myModalFooterBottom"
+			}
+		}
+	}
+	, "modal-local": {
+		"key": "modal-local"
+		, "name": "modal-local"
+		, "menu": {
+			"modalLocal": true
+		}
+		, "submenus": {
+			"demo": "Demo"
+			, "usage": "Usage"
+			, "events": "Events"
+		}
+		, "modals": {
+			"default": {
+				"title": true
+				, "footer": true
+			}
+		}
+	}
+	, "more-examples": {
+		"key": "more-examples"
+		, "name": "more-examples"
+		, "menu": {
+			"moreExamples": true
+		}
+		, "submenus": {
+			"common": "Common parts"
+			, "example1": "Black theme"
+			, "example2": "Captions animations"
+		}
+		, "modals": {
+			"example1": {
+				"title": true
+				, "footer": true
+				, "fullscreen": true
+				, "fullscreenForced": true
+				, "id": "myModal1"
+				, "alternateCloseButton": true
+				, "carouselControls": true
+				, "carouselId": "myCarousel1"
+			}
+			, "example2": {
+				"title": true
+				, "footer": true
+				, "fullscreen": true
+				, "fullscreenForced": true
+				, "id": "myModal2"
+				, "alternateCloseButton": true
+				, "carouselControls": true
+				, "carouselId": "myCarousel2"
+			}
+		}
+		, "carousels": {
+			"example1": {
+				"id": "myCarousel1"
+			}
+			, "example2": {
+				"id": "myCarousel2"
+			}
+		}
+	}
+}

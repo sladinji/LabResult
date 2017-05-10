@@ -1,0 +1,83 @@
+{% macro menu() %}
+  {% for item in admin_view.admin.menu() %}
+    {% if item.is_category() %}
+      {% set children = item.get_children() %}
+      {% if children %}
+        <li>
+          <a class="radHB20 dropdown-toggle{{ item|render_menu_item_css_class }}" data-toggle="dropdown" href="javascript:void(0)">{{ item|render_menu_item }}<b class="caret"></b></a>
+          <ul class="sous-menu dropdown-menu" role="menu">
+            {% for child in children %}
+              {% if child.is_active(admin_view) %}<li class="active">{% else %}<li>{% endif %}
+                <a href="{{ child.get_url() }}">{{ child.name }}</a>
+              </li>
+            {% endfor %}
+          </ul>
+        </li>
+      {% endif %}
+    {% else %}
+      {% if item.is_accessible() and item.is_visible() %}
+        {% if item.is_active(admin_view) %}<li class="active">{% else %}<li>{% endif %}
+          <a class="radHB20" href="{{ item.get_url() }}">{{ item.name }}
+          </a>
+        </li>
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+{% endmacro %}
+
+{% macro menu_links() %}
+  {% for item in admin_view.admin.menu_links() %}
+    {% if item.is_accessible() and item.is_visible() %}
+      <li>
+        <a class="radHB20" href="{{ item.get_url() }}">{{ item.name }}
+          {% if item.icon %}
+              <span class="glyphicon glyphicon-{{ item.icon}}"></span>
+          {% endif %}
+</a>
+      </li>
+    {% endif %}
+  {% endfor %}
+{% endmacro %}
+
+{% macro pre_menu_links() %}
+  {% for item in admin_view.admin.pre_links %}
+    {% if item.is_accessible() and item.is_visible() %}
+      <li>
+        <a class="radHB20" href="{{ item.get_url() }}">{{ item.name }}
+          {% if item.icon %}
+              <span class="glyphicon glyphicon-{{ item.icon}}"></span>
+          {% endif %}
+</a>
+      </li>
+    {% endif %}
+  {% endfor %}
+{% endmacro %}
+
+{% macro messages() %}
+  {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+      {% for category, m in messages %}
+        {% if category %}
+	{% set mapping = {'message': 'info', 'error': 'danger'} %}
+	<div class="{{ "messalert" if category != "error" else "" }} alert alert-{{ mapping.get(category, 'warning') }} alert-dismissable">
+        {% else %}
+        <div class="alert alert-dismissable">
+        {% endif %}
+	      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+          {{ m }}
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+{% endmacro %}
+
+{% macro footer() %}
+    <footer class="footer">
+      <div class="container txtcenter">
+	      <i class="fa fa-phone tbleuLR"></i> <a href ="tel:0033339250264" >03 39 25 02 64</a>
+	  <i class="fa fa-envelope-o tbleuLR"></i> <a href="mailto:#">contact@labresult.fr</a>
+      </div>
+      <p id="copyright" class="txtcenter">Copyright &copy; 2015 - <a href="http://labresult.fr">LabResult</a>. Tous droits réservés.</p>
+    </footer>
+ 
+{% endmacro %}

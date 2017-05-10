@@ -1,0 +1,51 @@
+{% extends 'admin/master.html' %}
+{% block body %}
+<!-- Content starts -->
+<div class="row">
+  <div class="col-md-6">
+    <h4 class="TTbleu txtmajus">
+      <span class="glyphicon glyphicon-user" aria-hidden="true"></span> Identifiants de connexion
+    </h4>
+    <p class="txtjusti">Vous pouvez, grâce au formulaire suivant, mettre à jour
+    vos identifiants. Votre nouveau mot de passe doit contenir au
+    moins {{min_car}} caractères.<br/>
+    Si vous perdez votre
+    mot de passe, vous  pouvez réinitialiser votre accès en
+    effectuant à nouveau la procédure d'authentification. Un
+    nouveau code temporaire vous sera transmis sur l'adresse
+    email communiquée ou par SMS au numéro transmis à votre
+    laboratoire.<br/><br/>
+    <span class="nomarg flaticon-dangerous3"></span> Si vous changez de numéro de
+    portable ou d'adresse de courriel, veillez à bien informer votre
+    laboratoire.
+    </p>
+  </div>
+  <div class="col-md-6">
+    <div class="panel panel-success">
+      <div class="panel-heading txtmajus txtcenter">
+	<span class="glyphicon glyphicon-lock" aria-hidden="true"></span> Saisissez vos nouveaux identifiants
+      </div>
+      <div class="panel-body">
+	{% from "account/_formhelpers.html" import render_field %}
+	<form method=post action="/account/" class="form-horizontal" autocomplete="off">
+	    {{ render_field(form.login,
+		      label_class="control-label col-md-3",
+		      input_class="form-control") }}
+	    {{ render_field(form.password,
+		      label_class="control-label col-md-3",
+		      input_class="form-control") }}
+	    {{ render_field(form.confirm,
+		      label_class="control-label col-md-3",
+		      input_class="form-control") }}
+	  <div class="txtcenter">
+	  <button class="btn btn-block btn-success txtmajus" type="submit" value="Valider">
+	    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Valider
+	  </button>
+	  </div>
+	</form>
+      </div>
+    </div>
+  </div>
+</div>
+  <!-- Content ends -->
+{% endblock %}

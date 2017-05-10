@@ -1,0 +1,100 @@
+diff -r 0af005cf72ce labresult/model/__init__.py
+--- a/labresult/model/__init__.py	Mon Jun 29 16:49:07 2015 +0200
++++ b/labresult/model/__init__.py	Mon Jul 13 12:16:09 2015 +0200
+@@ -329,7 +329,6 @@
+                 return right
+         return Right()
+ 
+-
+ class Img(db.Document):
+     """
+     Image of document.
+@@ -440,6 +439,9 @@
+     """Date when document was recorded in the system"""
+     numdos = db.StringField(max_length=128, verbose_name = gettext("Numéro de"
+     " dossier"))
++    """Biologist"""
++    biologist = db.ReferenceField(Administrator, reverse_delete_rule = db.NULLIFY,
++            verbose_name = gettext("Biologiste"))
+     """Folder number"""
+     patient = db.EmbeddedDocumentField(PatientAccess, required=False,
+             verbose_name = gettext("Patient"))
+diff -r 0af005cf72ce labresult/views/admin/__init__.py
+--- a/labresult/views/admin/__init__.py	Mon Jun 29 16:49:07 2015 +0200
++++ b/labresult/views/admin/__init__.py	Mon Jul 13 12:16:09 2015 +0200
+@@ -8,6 +8,8 @@
+ from jinja2 import Markup
+ from wtforms.fields import PasswordField, FileField, TextField
+ from wtforms.widgets import TextArea
++from flask_admin.form.fields import Select2Field
++
+ 
+ import labresult
+ from labresult.api.board import Board
+@@ -17,7 +19,7 @@
+ from labresult.lib.model import set_option, get_option
+ from labresult.lib.views import AuthView, frmt_pat_name, frmt_acl, frmt_healthworker_name, frmt_group_name, format_user, format_members, frmt_numdos, frmt_doc_type
+ from labresult.model import Option, FileOption, Document, HealthWorker
+-from labresult.model import Patient, FailedLogin
++from labresult.model import Patient, FailedLogin, Administrator
+ from labresult.printing import printdoc
+ 
+ 
+@@ -185,6 +187,17 @@
+                     }
+                 ).update(pull__groups__user=model)
+ 
++class Biolos():
++    """
++    Object used to filter biologiste in Document form
++    """
++
++    def __iter__(self):
++        for admin in Administrator.objects :
++            if admin.role and admin.role.name == 'biologiste' :
++                yield str(admin.id), admin.name
++
++
+ class DocumentView(AuthView):
+ 
+     allowed_users = [ 'User.Administrator']
+@@ -205,7 +218,8 @@
+ 
+     column_searchable_list = ('numdos', 'patient_name', 'healthworkers_name')
+ 
+-    form_columns = ( 'version', 'current_version', 'labo', 'patient', 'healthworkers', 'groups', 'log', 'doc_type', 'numdos',
++    form_columns = ( 'version', 'current_version', 'labo', 'biologiste', 'patient',
++    'healthworkers', 'groups', 'log', 'doc_type', 'numdos',
+     'traceback', 'data')
+ 
+     column_formatters = {
+@@ -215,12 +229,29 @@
+             'doc_type': frmt_doc_type,
+             }
+ 
++    form_extra_fields = {
++        'biologiste': Select2Field(
++            gettext('Biologiste'),
++             choices = Biolos(),
++             #allow_blank = True,
++             )
++        }
++
++    def edit_form(self, obj=None):
++        form = super(DocumentView,self).edit_form(obj)
++        import pdb; pdb.set_trace()
++        return form
++
+     def get_query(self):
+         return Board()._get_qry()
+ 
+     def get_count_query(self):
+         return self.get_query().count()
+ 
++    def on_model_change(self, form, model, is_created):
++        if form.biologiste.data:
++            model.biologist = Administrator.objects.get(id=form.biologiste.data)
++
+     def  after_model_change(self, form, model, is_created):
+         if is_created :
+             #build doc, not used for now (creation is done via restful api)

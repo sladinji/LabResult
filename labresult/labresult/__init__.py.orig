@@ -1,0 +1,124 @@
+from flask import Flask, url_for, redirect
+from flask.ext import admin
+from flask.ext.restful import Api
+from jinja2 import Markup
+from labresult.model import Patient, Document, Labo, Printer, Option
+from labresult.model import HealthWorker, Administrator, PublicationRule, Group
+from labresult.views.admin import AdminView, DocumentView, LaboView
+from labresult.views.admin import PrinterView, OptionView
+from labresult.views.admin import PublicationView, HealthWorkerView
+from labresult.views.admin import PatientView, DocumentPatientView
+from labresult.views.admin import DocumentHealthWorkerView
+from labresult.views.admin import GroupView
+from labresult.views.login import LoginView
+import labresult.api.file as apifile
+from labresult.api import printing, labos, pcl, documents, printers
+from labresult.api import user, board
+from labresult.lib.admin import AuthenticatedMenuLink, NotAuthenticatedMenuLink
+from labresult.extensions import make_celery
+
+import logging
+from logging.handlers import RotatingFileHandler
+
+app = None
+
+conf_short = {
+        'test' : 'labresult.config.TestConfig',
+        'dev' : 'labresult.config.DevConfig',
+        'prod' : 'labresult.config.ProductionConfig',
+        't300' : 'labresult.config.T300Config',
+        't300db' : 'labresult.config.T300DB',
+        }
+
+def create_app(config='prod'):
+    app = Flask(__name__)
+    app.config.from_object(conf_short[config])
+
+
+    #param logging
+    handler = RotatingFileHandler('labresult.log', maxBytes=10000, backupCount=1)
+    handler.setLevel(logging.DEBUG)
+    app.logger.addHandler(handler)
+
+    #param db
+    from labresult.model import db
+    db.init_app(app)
+
+    # flask-login init
+    from labresult.views import login
+    login.init_login(app)
+
+    # Celery init
+    make_celery(app)
+
+    # Create admin
+    accueil_menu = Markup('Accueuil<span class="menuic flaticon-house109"></span>')
+    index = LoginView(url='/lab', name=accueil_menu)
+    fadmin = admin.Admin(app, 'LabResult', "/", base_template="admin/base_custo.html", template_mode='bootstrap3',
+            index_view=index)
+
+    #Menu icons
+    doc_menu = Markup('Documents<span class="menuic flaticon-drawer4"></span>')
+    user_menu = Markup('Ulisateurs<span class="menuic flaticon-user58"></span>')
+    param_menu = Markup('Paramètres<span class="menuic flaticon-two185"></span>')
+    hw_menu = Markup('<span class="itemic flaticon-medical14"></span>Professionnels de santé')
+    grp_menu = Markup('<span class="itemic flaticon-multiple25"></span>Groupes')
+    admin_menu = Markup('<span class="itemic flaticon-man337"></span>Administrateurs')
+    labo_menu = Markup('<span class="itemic flaticon-microscope23"></span>Laboratoires')
+    pat_menu = Markup('<span class="itemic flaticon-user58"></span>Patients')
+    printer_menu = Markup('<span class="itemic flaticon-printer53"></span>Imprimantes')
+    opt_menu = Markup('<span class="itemic flaticon-adjust3"></span>Options')
+    opt_menu = Markup('<span class="itemic flaticon-adjust3"></span>Options')
+    dif_menu = Markup('<span class="itemic flaticon-programming"></span>Règles de diffusion')
+    # Flask Admin views
+    fadmin.add_view(index)
+    fadmin.add_view(DocumentView(Document, name = doc_menu))
+    fadmin.add_view(DocumentPatientView(Document, name = doc_menu,
+    endpoint='mesdocuments'))
+    fadmin.add_view(DocumentHealthWorkerView(Document, name = doc_menu,
+    endpoint='mesdossiers'))
+    fadmin.add_view(PatientView(Patient, name=pat_menu,category=user_menu))
+    fadmin.add_view(HealthWorkerView(HealthWorker,
+    name=hw_menu, category=user_menu)
+    )
+    fadmin.add_view(GroupView(Group, name=grp_menu, category=user_menu))
+    fadmin.add_view(AdminView(Administrator,
+        name=admin_menu, category=user_menu)
+        )
+    fadmin.add_view(LaboView(Labo, name=labo_menu, category= param_menu))
+    fadmin.add_view(PrinterView(Printer, name=printer_menu,
+    category=param_menu))
+    fadmin.add_view(OptionView(Option, name=opt_menu, category = param_menu))
+    fadmin.add_view(PublicationView(PublicationRule,
+    name=dif_menu, category = param_menu))
+
+
+    # Restful api
+    api = Api(app)
+    api.add_resource(pcl.PCL, '/api/v1.0/pcl')
+    api.add_resource(apifile.File, '/api/v1.0/file')
+    api.add_resource(printing.Printing, '/api/v1.0/printing')
+    api.add_resource(labos.Labo, '/api/v1.0/labos/<string:id>')
+    api.add_resource(printers.Printer, '/api/v1.0/printers/<string:id>')
+    api.add_resource(labos.Labos, '/api/v1.0/labos')
+    api.add_resource(documents.Document, '/api/v1.0/documents/')
+    api.add_resource(board.Board, '/api/v1.0/board')
+    api.add_resource(user.UserInfo, '/api/v1.0/user')
+    api.add_resource(user.UserList, '/api/v1.0/userlist')
+
+    #Add login link
+    deco_menu = Markup(
+    'Déconnexion<span class="menuic flaticon-logout20"></span>')
+    con_menu = Markup(
+    'Connexion<span class="menuic flaticon-login10"></span>')
+    fadmin.add_link(AuthenticatedMenuLink(name=deco_menu,
+    endpoint="admin.logout"))
+    fadmin.add_link(NotAuthenticatedMenuLink(name=con_menu,
+    endpoint="admin.index"))
+
+    @app.route('/')
+    def index():
+        return redirect(url_for("admin.index"))
+
+    #print(app.url_map)
+    return app

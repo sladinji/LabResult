@@ -1,0 +1,85 @@
+{{> partials/header data.carousel-fit}}
+
+<h2>Purpose</h2>
+<p>Adapt a carousel to its slides.</p>
+
+<hr />
+
+<h2 id="demo">Demo</h2>
+
+<form class="form-inline" role="form">
+	<div class="checkbox">
+		<label>
+			<input type="checkbox" name="carouselFit" id="carouselFit" checked="true" />
+			Enable/disable the auto-fit
+		</label>
+	</div>
+</form>
+
+{{> partials/carousel data.carousel-fit.carousels.default}}
+
+<hr />
+
+<h2 id="usage">Usage</h2>
+<p>Add the <code>.carousel-fit</code> class name to the carousel element, and that's it !</p>
+<pre><code>&lt;link href=&quot;carousel-fit.css&quot; rel=&quot;stylesheet&quot; /&gt;
+
+&lt;script src=&quot;carousel-fit.js&quot;/&gt;&lt;/script/&gt;
+
+&lt;div id=&quot;myCarousel&quot; class=&quot;carousel slide carousel-fit&quot; data-ride=&quot;carousel&quot;&gt;
+  &lt;!-- Indicators --&gt;
+  &lt;ol class=&quot;carousel-indicators&quot;&gt;
+    &lt;li data-target=&quot;#myCarousel&quot; data-slide-to=&quot;0&quot; class=&quot;active&quot;&gt;&lt;/li&gt;
+    &lt;li data-target=&quot;#myCarousel&quot; data-slide-to=&quot;1&quot;&gt;&lt;/li&gt;
+    &lt;li data-target=&quot;#myCarousel&quot; data-slide-to=&quot;2&quot;&gt;&lt;/li&gt;
+  &lt;/ol&gt;
+
+  &lt;!-- Wrapper for slides --&gt;
+  &lt;div class=&quot;carousel-inner&quot;&gt;
+    &lt;div class=&quot;item active&quot;&gt;
+      &lt;img data-src=&quot;holder.js/900x500/auto/#777:#555/text:First slide&quot; alt=&quot;First slide&quot;&gt;
+      &lt;div class=&quot;carousel-caption&quot;&gt;
+        &lt;h3&gt;First slide label&lt;/h3&gt;
+        &lt;p&gt;Nulla vitae elit libero, a pharetra augue mollis interdum.&lt;/p&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;item&quot;&gt;
+      &lt;img data-src=&quot;holder.js/750x400/auto/#666:#444/text:Second slide&quot; alt=&quot;Second slide&quot;&gt;
+      &lt;div class=&quot;carousel-caption&quot;&gt;
+        &lt;h3&gt;Second slide label&lt;/h3&gt;
+        &lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/p&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;item&quot;&gt;
+      &lt;img data-src=&quot;holder.js/600x300/auto/#555:#333/text:Third slide&quot; alt=&quot;Third slide&quot;&gt;
+      &lt;div class=&quot;carousel-caption&quot;&gt;
+        &lt;h3&gt;Third slide label&lt;/h3&gt;
+        &lt;p&gt;Praesent commodo cursus magna, vel scelerisque nisl consectetur.&lt;/p&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;!-- Controls --&gt;
+  &lt;a class=&quot;left carousel-control&quot; href=&quot;#myCarousel&quot; data-slide=&quot;prev&quot;&gt;
+    &lt;span class=&quot;glyphicon glyphicon-chevron-left&quot;&gt;&lt;/span&gt;
+  &lt;/a&gt;
+  &lt;a class=&quot;right carousel-control&quot; href=&quot;#myCarousel&quot; data-slide=&quot;next&quot;&gt;
+    &lt;span class=&quot;glyphicon glyphicon-chevron-right&quot;&gt;&lt;/span&gt;
+  &lt;/a&gt;
+&lt;/div&gt;</code></pre>
+
+<h3 id="events">Events</h3>
+<p>The <code>fit.bs.local</code> event is trigerred each time the carousel is adjusted. The new <code>height</code> is passed to the event.</p>
+
+{{> partials/footer data.carousel-fit}}
+
+<script>
+  var checkCarouselFit = function () {
+    $('#myCarousel')[$('#carouselFit').is(':checked') ? 'addClass' : 'removeClass']('carousel-fit');
+    if (!$('#carouselFit').is(':checked')) {
+      $('#myCarousel').height('auto');
+    }
+  };
+	$('#carouselFit').on('change', checkCarouselFit);
+  checkCarouselFit();
+</script>

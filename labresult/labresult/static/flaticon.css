@@ -1,0 +1,131 @@
+@font-face {
+	font-family: "Flaticon";
+	src: url("flaticon.eot");
+	src: url("flaticon.eot#iefix") format("embedded-opentype"),
+	url("flaticon.woff") format("woff"),
+	url("flaticon.ttf") format("truetype"),
+	url("flaticon.svg") format("svg");
+	font-weight: normal;
+	font-style: normal;
+}
+[class^="flaticon-"]:before, [class*=" flaticon-"]:before,
+[class^="flaticon-"]:after, [class*=" flaticon-"]:after {   
+	font-family: Flaticon;
+font-style: normal;
+}.flaticon-adjust3:before {
+	content: "\e000";
+}
+.flaticon-important:before {
+	content: "\e001";
+}
+.flaticon-advanced:before {
+	content: "\e002";
+}
+.flaticon-android2:before {
+	content: "\e003";
+}
+.flaticon-apple19:before {
+	content: "\e004";
+}
+.flaticon-arrow73:before {
+	content: "\e005";
+}
+.flaticon-business61:before {
+	content: "\e006";
+}
+.flaticon-cascade:before {
+	content: "\e007";
+}
+.flaticon-code34:before {
+	content: "\e008";
+}
+.flaticon-drawer4:before {
+	content: "\e009";
+}
+.flaticon-folder240:before {
+	content: "\e00a";
+}
+.flaticon-graph8:before {
+	content: "\e00b";
+}
+.flaticon-house109:before {
+	content: "\e00c";
+}
+.flaticon-html17:before {
+	content: "\e00d";
+}
+.flaticon-interface19:before {
+	content: "\e00e";
+}
+.flaticon-left17:before {
+	content: "\e00f";
+}
+.flaticon-linux1:before {
+	content: "\e010";
+}
+.flaticon-login10:before {
+	content: "\e011";
+}
+.flaticon-logout20:before {
+	content: "\e012";
+}
+.flaticon-man337:before {
+	content: "\e013";
+}
+.flaticon-medical14:before {
+	content: "\e014";
+}
+.flaticon-microscope23:before {
+	content: "\e015";
+}
+.flaticon-move25:before {
+	content: "\e016";
+}
+.flaticon-multiple25:before {
+	content: "\e017";
+}
+.flaticon-password17:before {
+	content: "\e018";
+}
+.flaticon-personal19:before {
+	content: "\e019";
+}
+.flaticon-phone43:before {
+	content: "\e01a";
+}
+.flaticon-printer53:before {
+	content: "\e01b";
+}
+.flaticon-printer70:before {
+	content: "\e01c";
+}
+.flaticon-programming:before {
+	content: "\e01d";
+}
+.flaticon-python4:before {
+	content: "\e01e";
+}
+.flaticon-recycle77:before {
+	content: "\e01f";
+}
+.flaticon-responsive2:before {
+	content: "\e020";
+}
+.flaticon-size7:before {
+	content: "\e021";
+}
+.flaticon-text20:before {
+	content: "\e022";
+}
+.flaticon-text32:before {
+	content: "\e023";
+}
+.flaticon-two185:before {
+	content: "\e024";
+}
+.flaticon-user58:before {
+	content: "\e025";
+}
+.flaticon-woman93:before {
+	content: "\e026";
+}

@@ -1,0 +1,545 @@
+# English translations for PROJECT.
+# Copyright (C) 2015 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2015.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2015-04-08 12:20+0200\n"
+"PO-Revision-Date: 2015-02-26 11:14+0100\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 1.3\n"
+
+#: builder/publisher.py:42
+#, python-format
+msgid "No rules for %s"
+msgstr ""
+
+#: lib/auth.py:154
+msgid "Nombre de caractères minimum pour un mot de passe"
+msgstr ""
+
+#: lib/auth.py:156
+#, python-format
+msgid "Le mot de passe doit faire plus de %s caractères"
+msgstr ""
+
+#: lib/auth.py:159
+msgid "La confirmation du mot de passe ne correspond pas"
+msgstr ""
+
+#: lib/auth.py:173
+msgid "Le login existe déjà"
+msgstr ""
+
+#: lib/conf.py:72
+msgid "Durée en minutes d'inactivité avant déconnexion automatique."
+msgstr ""
+
+#: lib/conf.py:130
+msgid "Serveur SMTP pour l'envoi des erreurs."
+msgstr ""
+
+#: lib/conf.py:132
+msgid "Email envoyeur pour les erreurs."
+msgstr ""
+
+#: lib/conf.py:135
+msgid "Emails destinataires pour l'envoi des erreurs du serveur"
+msgstr ""
+
+#: lib/conf.py:139
+msgid "Anomalie serveur LabResult"
+msgstr ""
+
+#: lib/conf.py:165
+msgid "Acceuil"
+msgstr ""
+
+#: lib/conf.py:255
+msgid "La page demandée n'existe pas."
+msgstr ""
+
+#: lib/conf.py:260
+msgid "Le serveur a rencontré une erreur."
+msgstr ""
+
+#: lib/views.py:46
+msgid "Vous devez vous identifier pour accéder à la ressource demandée"
+msgstr ""
+
+#: lib/views.py:80
+msgid "Vous devez vous identifier pour accéder à la ressource demandée."
+msgstr ""
+
+#: lib/views.py:83
+msgid "Vous n'avez pas les droits nécessaires pour accéder à la page demandée."
+msgstr ""
+
+#: model/__init__.py:18
+msgid "Types de documents sur lesquels l'entête sera appliquée."
+msgstr ""
+
+#: model/__init__.py:37 model/__init__.py:399
+msgid "Type de document"
+msgstr ""
+
+#: model/__init__.py:39 model/__init__.py:63
+msgid "Options"
+msgstr ""
+
+#: model/__init__.py:45
+msgid "Imprimante par défaut"
+msgstr ""
+
+#: model/__init__.py:47 model/__init__.py:79 model/__init__.py:122
+#: model/__init__.py:245 model/__init__.py:271 views/admin/__init__.py:68
+#: views/admin/__init__.py:284
+msgid "Nom"
+msgstr ""
+
+#: model/__init__.py:51
+msgid "Adresse serveur d'impression"
+msgstr ""
+
+#: model/__init__.py:55
+msgid "Port"
+msgstr ""
+
+#: model/__init__.py:59 model/__init__.py:513
+msgid "Activée"
+msgstr ""
+
+#: model/__init__.py:76 model/__init__.py:116
+msgid "ID externe"
+msgstr ""
+
+#: model/__init__.py:81 model/__init__.py:131 views/admin/__init__.py:286
+msgid "Adresse"
+msgstr ""
+
+#: model/__init__.py:85 views/admin/__init__.py:287
+msgid "Labo par défaut"
+msgstr ""
+
+#: model/__init__.py:89 views/admin/__init__.py:288
+msgid "Imprimantes"
+msgstr ""
+
+#: model/__init__.py:93 views/admin/__init__.py:289
+msgid "Entêtes"
+msgstr ""
+
+#: model/__init__.py:118
+msgid "Connexion impossible si le compte n'est pas activé"
+msgstr ""
+
+#: model/__init__.py:120 views/admin/__init__.py:69
+msgid "Compte activé"
+msgstr ""
+
+#: model/__init__.py:123
+msgid "Prénom"
+msgstr ""
+
+#: model/__init__.py:125
+msgid "Nom de famille"
+msgstr ""
+
+#: model/__init__.py:126
+msgid "Civilité"
+msgstr ""
+
+#: model/__init__.py:127
+msgid "Naissance"
+msgstr ""
+
+#: model/__init__.py:128
+msgid "Mobile"
+msgstr ""
+
+#: model/__init__.py:129
+msgid "Fixe"
+msgstr ""
+
+#: model/__init__.py:130
+msgid "Courriel"
+msgstr ""
+
+#: model/__init__.py:135 templates/login/form.html:41
+#: views/account/__init__.py:15
+msgid "Mot de passe"
+msgstr ""
+
+#: model/__init__.py:136 views/account/__init__.py:14
+msgid "Login"
+msgstr ""
+
+#: model/__init__.py:200
+msgid "N° sécu"
+msgstr ""
+
+#: model/__init__.py:202 model/__init__.py:380 model/__init__.py:421
+msgid "Tuteur"
+msgstr ""
+
+#: model/__init__.py:218 model/__init__.py:499 views/admin/__init__.py:71
+#: views/admin/__init__.py:314
+msgid "Commentaire"
+msgstr ""
+
+#: model/__init__.py:226 model/__init__.py:389
+msgid "Groupe"
+msgstr ""
+
+#: model/__init__.py:227
+msgid "Partage"
+msgstr ""
+
+#: model/__init__.py:234
+msgid ""
+"L'utilisateur peut accéder aux documents des groupes auxquels il "
+"appartient, et partage ses documents avec le groupe si l'option "
+"\"partage\" est activée."
+msgstr ""
+
+#: model/__init__.py:238 model/__init__.py:418 views/admin/__init__.py:70
+msgid "Groupes"
+msgstr ""
+
+#: model/__init__.py:260
+msgid "Vue"
+msgstr ""
+
+#: model/__init__.py:261
+msgid "Création"
+msgstr ""
+
+#: model/__init__.py:262
+msgid "Lecture"
+msgstr ""
+
+#: model/__init__.py:263
+msgid "Edition"
+msgstr ""
+
+#: model/__init__.py:264
+msgid "Suppression"
+msgstr ""
+
+#: model/__init__.py:283
+msgid ""
+"Droits particuliers à l'utilisateur, priment sur les droits définis au "
+"niveau du role."
+msgstr ""
+
+#: model/__init__.py:285
+msgid "Droits"
+msgstr ""
+
+#: model/__init__.py:304
+msgid "Format"
+msgstr ""
+
+#: model/__init__.py:305 model/__init__.py:397
+msgid "Fichier"
+msgstr ""
+
+#: model/__init__.py:306
+msgid "Miniature"
+msgstr ""
+
+#: model/__init__.py:307
+msgid "Numéro de page"
+msgstr ""
+
+#: model/__init__.py:334
+msgid "ID travail d'impression"
+msgstr ""
+
+#: model/__init__.py:336
+msgid "Date d'impression"
+msgstr ""
+
+#: model/__init__.py:337
+msgid "Imprimante"
+msgstr ""
+
+#: model/__init__.py:338 model/__init__.py:437 views/admin/__init__.py:188
+msgid "Statut"
+msgstr ""
+
+#: model/__init__.py:358 model/__init__.py:505 views/admin/__init__.py:313
+msgid "Utilisateur"
+msgstr ""
+
+#: model/__init__.py:360
+msgid "Accessible"
+msgstr ""
+
+#: model/__init__.py:363
+msgid "Disponible depuis"
+msgstr ""
+
+#: model/__init__.py:365
+msgid "Raison de non diffusion"
+msgstr ""
+
+#: model/__init__.py:369 model/__init__.py:431
+msgid "Journaux"
+msgstr ""
+
+#: model/__init__.py:377 model/__init__.py:412 views/admin/__init__.py:186
+msgid "Patient"
+msgstr ""
+
+#: model/__init__.py:383
+msgid "Professionel de santé"
+msgstr ""
+
+#: model/__init__.py:385
+msgid "Rôle"
+msgstr ""
+
+#: model/__init__.py:402
+msgid "Texte"
+msgstr ""
+
+#: model/__init__.py:405
+msgid "Date de capture"
+msgstr ""
+
+#: model/__init__.py:408
+msgid "Numéro de dossier"
+msgstr ""
+
+#: model/__init__.py:415
+msgid "Professionnels de santé"
+msgstr ""
+
+#: model/__init__.py:423
+msgid "Mots clés"
+msgstr ""
+
+#: model/__init__.py:425
+msgid "Nom patient"
+msgstr ""
+
+#: model/__init__.py:429
+msgid "Noms professionels de santé"
+msgstr ""
+
+#: model/__init__.py:433
+msgid "Avertissements"
+msgstr ""
+
+#: model/__init__.py:435
+msgid "Erreur de traitement"
+msgstr ""
+
+#: model/__init__.py:439
+msgid "Origine"
+msgstr ""
+
+#: model/__init__.py:441
+msgid "PDF"
+msgstr ""
+
+#: model/__init__.py:443
+msgid "Nombres de pages"
+msgstr ""
+
+#: model/__init__.py:448
+msgid "Travaux d'impression"
+msgstr ""
+
+#: model/__init__.py:451
+msgid "Laboratoire"
+msgstr ""
+
+#: model/__init__.py:453
+msgid "Version"
+msgstr ""
+
+#: model/__init__.py:456
+msgid "Version courante"
+msgstr ""
+
+#: model/__init__.py:459
+msgid "Entête"
+msgstr ""
+
+#: model/__init__.py:500 views/admin/__init__.py:315
+msgid "Message"
+msgstr ""
+
+#: model/__init__.py:501
+msgid ""
+"Ce message apparaitra dans les journaux pour expliquer pourquoi le "
+"document n'est pas accessible"
+msgstr ""
+
+#: model/__init__.py:507
+msgid "Règle"
+msgstr ""
+
+#: model/__init__.py:509
+msgid ""
+"Une règle de diffusion sert à définir les droits d'accès à un document. "
+"Elle ne s'applique que lorsqu'elle est activée. Si la règle retourne "
+"vrai, le document est accessible."
+msgstr ""
+
+#: printing/__init__.py:19
+msgid "Pas de labo associé au document"
+msgstr ""
+
+#: printing/__init__.py:27
+msgid ""
+"Pas d'imprimante pour ce type de document ou pas d'imprimante par défaut "
+"définie pour ce laboratoire. Configurez le laboratoire ou les imprimantes"
+" correctement pour pouvoir imprimer."
+msgstr ""
+
+#: templates/admin/base_custo.html:70
+msgid "Erreur"
+msgstr ""
+
+#: templates/login/form.html:10
+msgid "Obtenir mes identifiants"
+msgstr "Get your credentials"
+
+#: templates/login/form.html:13
+msgid "Saisissez votre adresse email"
+msgstr ""
+
+#: templates/login/form.html:15
+msgid "adresse email"
+msgstr ""
+
+#: templates/login/form.html:24
+msgid "Valider"
+msgstr ""
+
+#: templates/login/form.html:40
+msgid "Identifiant"
+msgstr ""
+
+#: views/account/__init__.py:19
+msgid "Confirmation"
+msgstr ""
+
+#: views/account/__init__.py:31
+msgid "Vos identifiants ont été mis à jour"
+msgstr ""
+
+#: views/admin/__init__.py:72
+msgid "Membres"
+msgstr ""
+
+#: views/admin/__init__.py:184
+msgid "Fichiers"
+msgstr ""
+
+#: views/admin/__init__.py:184
+msgid "Type"
+msgstr ""
+
+#: views/admin/__init__.py:185
+msgid "Professionnels"
+msgstr ""
+
+#: views/admin/__init__.py:186
+msgid "Dossier"
+msgstr ""
+
+#: views/admin/__init__.py:187
+msgid "Provenance"
+msgstr ""
+
+#: views/admin/__init__.py:221
+msgid "Problème avec le document : "
+msgstr ""
+
+#: views/admin/__init__.py:224
+#, python-format
+msgid "Document repassé : %s"
+msgstr ""
+
+#: views/admin/__init__.py:228
+msgid "Repasser"
+msgstr ""
+
+#: views/admin/__init__.py:229
+msgid "Êtes vous sur de vouloir repasser les documents sélectionnés ?"
+msgstr ""
+
+#: views/admin/__init__.py:237
+#, python-format
+msgid "Erreur lors de la réintégration des documents (%s)"
+msgstr ""
+
+#: views/admin/__init__.py:247
+#, python-format
+msgid "Impression OK ( id du job : %s )"
+msgstr ""
+
+#: views/admin/__init__.py:250
+#, python-format
+msgid "Erreur lors de l'impression du document (%s)"
+msgstr ""
+
+#: views/admin/__init__.py:256
+msgid "Imprimer"
+msgstr ""
+
+#: views/admin/__init__.py:257
+msgid "Êtes vous sur de vouloir imprimer les documents sélectionnés ?"
+msgstr ""
+
+#: views/admin/__init__.py:264
+msgid "Impression demandée pour les document sélectionnés."
+msgstr ""
+
+#: views/admin/__init__.py:268
+#, python-format
+msgid "Erreur lors de la demande d'impression des documents (%s)"
+msgstr ""
+
+#: views/admin/__init__.py:285
+msgid "Identifiant externe"
+msgstr ""
+
+#: views/admin/__init__.py:316
+msgid "Activé"
+msgstr ""
+
+#: views/admin/__init__.py:352 views/admin/__init__.py:370
+#, python-format
+msgid "%(error)s"
+msgstr ""
+
+#: views/admin/__init__.py:363
+#, python-format
+msgid ""
+"L'option est de type %(type)s. La valeur que vous avez saisie est "
+"incorrecte pour ce type.Si vous souhaitez changer de type d'option, vous "
+"devez d'abord la supprimer."
+msgstr ""
+
+#~ msgid ""
+#~ msgstr ""
+
+#~ msgid "n° mobile ou adresse email"
+#~ msgstr ""
+
+#~ msgid "in list"
+#~ msgstr ""
+

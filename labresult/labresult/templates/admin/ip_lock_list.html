@@ -1,0 +1,21 @@
+{% extends 'admin/model/list_custo.html' %}
+{% block body %}
+<div class="panel panel-default margB10">
+  <div class="panel-heading txt20">
+      <i class="flaticon-firewall13"></i> <span class="tbleuLR">Débloquer un accès</span>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12 col-sm-12">
+    <h4 class="TTbleu txtmajus"><span class="flaticon-info28 nomargin txt30"></span> Pourquoi certaines IP sont bloquées ?</h4>
+  </div>
+  <div class="col-md-6 col-sm-6">
+      <p class="txtjusti">Lorsqu'un trop grand nombre de tentatives de connexion échouent, <span class="txtgras">le système interdit l'accès au serveur à l'adresse IP</span> correspondante pendant une heure. Cette restriction permet de <span class="txtgras">se prémunir contre les tentatives de piratage</span> d'un compte utilisateur. Le tableau ci-dessous vous permet de lever les restrictions d'accès pour les utilisateurs ayant simplement quelques difficultés à se souvenir de leurs identifiants...</p>
+  </div>
+  <div class="col-md-6 col-sm-6 txtcenter txtgrisf">
+    <span class="flaticon-security1 nomargin txt60"></span>
+  </div>
+</div>
+{{ super()  }}
+  <!-- Content ends -->
+{% endblock %}

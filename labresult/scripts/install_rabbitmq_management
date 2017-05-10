@@ -1,0 +1,4 @@
+#!/bin/bash
+# install RabbitMQ management
+# web UI is then accessible on http://server-name:15672/ 
+sudo rabbitmq-plugins enable rabbitmq_management

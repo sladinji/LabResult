@@ -1,0 +1,81 @@
+
+/* for action button to not split on two line */
+
+.btn-group {
+  white-space: nowrap;
+}
+
+.btn-group>.btn,.btn-group-vertical>.btn{
+	float:none;
+}
+/* Modal full screen black background */
+
+.modal-body{
+    padding: 2px;
+}
+
+.modal.modal-fullscreen .modal-content {
+    background: rgba(0, 0, 0, .5);
+}
+.modal.modal-fullscreen .modal-header {
+    border: 0;
+    color: #fff;
+  }
+  .modal.modal-fullscreen .modal-footer {
+    border-color: rgba(0, 0, 0, .5);
+  }
+  #modal_img_header{
+    color: #fff;
+    font-size: 1.5em;
+  }
+.bigclose {
+    margin-right: 50px;
+    float: right;
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1;
+    color: #FFF;
+    text-shadow: 0px 1px 0px #FFF;
+    opacity: 0.9;
+}
+.bigclose:hover {
+  color: #FF0000;
+}
+.carousel-control .glyphicon-chevron-left, .carousel-control .glyphicon-chevron-right, .carousel-control .icon-prev, .carousel-control .icon-next {
+    width: 15px;
+    height: 15px;
+    margin-top: -15px;
+    margin-left: -15px;
+    font-size: 150px;
+}
+.carousel-indicators {
+    position: relative;
+    top: 4px;
+}
+.carousel-indicators li {
+    width: 10px;
+    height: 10px;
+}
+.carousel-indicators .active {
+    width: 10px;
+    height: 10px;
+    margin: 1px;
+}
+
+/* flaticon */
+.bigic {
+    font-size: 60px;
+    margin-left: 20px;
+}
+
+.menuic {
+    font-size: 20px;
+    margin-left: 10px;
+}
+
+.itemic {
+    font-size: 20px;
+    margin-right: 20px;
+    margin-left: 0px;
+}
+

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?><testsuite name="nosetests" tests="40" errors="0" failures="0" skip="0"><testcase classname="testbuilder.TestBuilder" name="test_get_doc" time="0.063"></testcase><testcase classname="testbuilder.TestBuilder" name="test_get_gridfs_data_from_id" time="0.039"></testcase><testcase classname="testbuilder.TestBuilder" name="test_version" time="0.224"></testcase><testcase classname="testconv.TestConv" name="testPclConv" time="0.510"></testcase><testcase classname="testconv.TestConv" name="testPdfMerge" time="0.280"></testcase><testcase classname="testconv.TestConv" name="testPngConv" time="0.486"></testcase><testcase classname="testmodel.TestParse" name="test_lastresult" time="0.024"></testcase><testcase classname="testparse.TestParse" name="test_UTF8" time="0.028"></testcase><testcase classname="testparse.TestParse" name="test_birth_date" time="0.026"></testcase><testcase classname="testparse.TestParse" name="test_build" time="0.040"></testcase><testcase classname="testparse.TestParse" name="test_denormalize" time="0.009"></testcase><testcase classname="testparse.TestParse" name="test_doc_compile" time="0.008"></testcase><testcase classname="testparse.TestParse" name="test_document_integrity" time="0.008"></testcase><testcase classname="testparse.TestParse" name="test_extract" time="0.013"></testcase><testcase classname="testparse.TestParse" name="test_fixtag" time="0.012"></testcase><testcase classname="testparse.TestParse" name="test_invalid_user" time="0.074"></testcase><testcase classname="testparse.TestParse" name="test_invalide_date" time="0.023"></testcase><testcase classname="testparse.TestParse" name="test_no_numdos" time="0.032"></testcase><testcase classname="testparse.TestParse" name="test_notag" time="0.030"></testcase><testcase classname="testprint.TestPrint" name="test_printdoc" time="0.038"></testcase><testcase classname="testpublication.TestPublisher" name="test_doctype" time="0.017"></testcase><testcase classname="testpublication.TestPublisher" name="test_group" time="0.019"></testcase><testcase classname="testpublication.TestPublisher" name="test_no_rule" time="0.013"></testcase><testcase classname="testpublication.TestPublisher" name="test_tutor" time="0.018"></testcase><testcase classname="testweb.TestWeb" name="test_access_rights" time="0.367"><system-err><![CDATA[UserWarning: fails url_for with printer [testweb.py:48]
+UserWarning: fails url_for with labo [testweb.py:48]
+UserWarning: fails url_for with document.print_doc [testweb.py:48]
+UserWarning: fails url_for with document.reset_doc [testweb.py:48]
+UserWarning: fails url_for with static [testweb.py:48]
+]]></system-err></testcase><testcase classname="testweb.TestWeb" name="test_add_pcl" time="0.515"><system-err><![CDATA[UserWarning: Test document edit via view disaled,bug in flask admin [testweb.py:179]
+]]></system-err></testcase><testcase classname="testweb.TestWeb" name="test_app_creation" time="0.467"></testcase><testcase classname="testweb.TestWeb" name="test_board_api" time="0.314"></testcase><testcase classname="testweb.TestWeb" name="test_credential" time="6.075"><system-err><![CDATA[2015-05-08 18:32:29,604 None ERROR Anonymous(-1) POST /credential/ { } Traceback (most recent call last):
+  File "/home/dowst/projets/labresult/lib/python3.4/site-packages/mongoengine-0.8.7-py3.4.egg/mongoengine/queryset/base.py", line 182, in get
+    result = next(queryset)
+  File "/home/dowst/projets/labresult/lib/python3.4/site-packages/mongoengine-0.8.7-py3.4.egg/mongoengine/queryset/base.py", line 1137, in __next__
+    raw_doc = next(self._cursor)
+  File "/home/dowst/projets/labresult/lib/python3.4/site-packages/pymongo-2.8-py3.4-linux-x86_64.egg/pymongo/cursor.py", line 1083, in __next__
+    raise StopIteration
+StopIteration
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/dowst/projets/labresult/labresult/views/credential/__init__.py", line 33, in index
+    form.code.data.strip()).get()
+  File "/home/dowst/projets/labresult/lib/python3.4/site-packages/mongoengine-0.8.7-py3.4.egg/mongoengine/queryset/base.py", line 186, in get
+    raise queryset._document.DoesNotExist(msg)
+labresult.model.DoesNotExist: User matching query does not exist.
+
+--- Logging error ---
+Traceback (most recent call last):
+  File "/home/dowst/projets/labresult/lib/python3.4/site-packages/mongoengine-0.8.7-py3.4.egg/mongoengine/queryset/base.py", line 182, in get
+    result = next(queryset)
+  File "/home/dowst/projets/labresult/lib/python3.4/site-packages/mongoengine-0.8.7-py3.4.egg/mongoengine/queryset/base.py", line 1137, in __next__
+    raw_doc = next(self._cursor)
+  File "/home/dowst/projets/labresult/lib/python3.4/site-packages/pymongo-2.8-py3.4-linux-x86_64.egg/pymongo/cursor.py", line 1083, in __next__
+    raise StopIteration
+StopIteration
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/dowst/projets/labresult/labresult/views/credential/__init__.py", line 33, in index
+    form.code.data.strip()).get()
+  File "/home/dowst/projets/labresult/lib/python3.4/site-packages/mongoengine-0.8.7-py3.4.egg/mongoengine/queryset/base.py", line 186, in get
+    raise queryset._document.DoesNotExist(msg)
+labresult.model.DoesNotExist: User matching query does not exist.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.4/logging/handlers.py", line 971, in emit
+    smtp = smtplib.SMTP(self.mailhost, port, timeout=self.timeout)
+  File "/usr/lib/python3.4/smtplib.py", line 242, in __init__
+    (code, msg) = self.connect(host, port)
+  File "/usr/lib/python3.4/smtplib.py", line 321, in connect
+    self.sock = self._get_socket(host, port, self.timeout)
+  File "/usr/lib/python3.4/smtplib.py", line 292, in _get_socket
+    self.source_address)
+  File "/usr/lib/python3.4/socket.py", line 509, in create_connection
+    raise err
+  File "/usr/lib/python3.4/socket.py", line 500, in create_connection
+    sock.connect(sa)
+OSError: [Errno 101] Network is unreachable
+Call stack:
+  File "./bin/nosetests", line 11, in <module>
+    sys.exit(run_exit())
+  File "/home/dowst/projets/labresult/lib/python3.4/site-packages/nose/core.py", line 121, in __init__
+    **extra_args)
+  File "/usr/lib/python3.4/unittest/main.py", line 93, in __init__
+    self.runTests()
+  File "/home/dowst/projets/labresult/lib/python3.4/site-packages/nose/core.py", line 207, in runTests
+    result = self.testRunner.run(self.test)
+  File "/home/dowst/projets/labresult/lib/python3.4/site-packages/nose/core.py", line 62, in run
+    test(result)
+  File "/home/dowst/projets/labresult/lib/python3.4/site-packages/nose/suite.py", line 178, in __call__
+    return self.run(*arg, **kw)
+  File "/home/dowst/projets/labresult/lib/python3.4/site-packages/nose/suite.py", line 225, in run
+    test(orig)
+  File "/usr/lib/python3.4/unittest/suite.py", line 87, in __call__
+    return self.run(*args, **kwds)
+  File "/home/dowst/projets/labresult/lib/python3.4/site-packages/nose/suite.py", line 76, in run
+    test(result)
+  File "/home/dowst/projets/labresult/lib/python3.4/site-packages/nose/suite.py", line 178, in __call__
+    return self.run(*arg, **kw)
+  File "/home/dowst/projets/labresult/lib/python3.4/site-packages/nose/suite.py", line 225, in run
+    test(orig)
+  File "/home/dowst/projets/labresult/lib/python3.4/site-packages/nose/suite.py", line 178, in __call__
+    return self.run(*arg, **kw)
+  File "/home/dowst/projets/labresult/lib/python3.4/site-packages/nose/suite.py", line 225, in run
+    test(orig)
+  File "/home/dowst/projets/labresult/lib/python3.4/site-packages/nose/case.py", line 46, in __call__
+    return self.run(*arg, **kwarg)
+  File "/home/dowst/projets/labresult/lib/python3.4/site-packages/nose/case.py", line 134, in run
+    self.runTest(result)
+  File "/home/dowst/projets/labresult/lib/python3.4/site-packages/nose/case.py", line 152, in runTest
+    test(result)
+  File "/usr/lib/python3.4/unittest/case.py", line 625, in __call__
+    return self.run(*args, **kwds)
+  File "/usr/lib/python3.4/unittest/case.py", line 577, in run
+    testMethod()
+  File "/home/dowst/projets/labresult/tests/testweb.py", line 93, in test_credential
+    ), follow_redirects=False)
+  File "/home/dowst/projets/labresult/lib/python3.4/site-packages/Werkzeug-0.10.1-py3.4.egg/werkzeug/test.py", line 784, in post
+    return self.open(*args, **kw)
+  File "/home/dowst/projets/labresult/lib/python3.4/site-packages/Flask-0.10.1-py3.4.egg/flask/testing.py", line 108, in open
+    follow_redirects=follow_redirects)
+  File "/home/dowst/projets/labresult/lib/python3.4/site-packages/Werkzeug-0.10.1-py3.4.egg/werkzeug/test.py", line 742, in open
+    response = self.run_wsgi_app(environ, buffered=buffered)
+  File "/home/dowst/projets/labresult/lib/python3.4/site-packages/Werkzeug-0.10.1-py3.4.egg/werkzeug/test.py", line 659, in run_wsgi_app
+    rv = run_wsgi_app(self.application, environ, buffered=buffered)
+  File "/home/dowst/projets/labresult/lib/python3.4/site-packages/Werkzeug-0.10.1-py3.4.egg/werkzeug/test.py", line 867, in run_wsgi_app
+    app_iter = app(environ, start_response)
+  File "/home/dowst/projets/labresult/lib/python3.4/site-packages/Flask-0.10.1-py3.4.egg/flask/app.py", line 1836, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/home/dowst/projets/labresult/lib/python3.4/site-packages/Flask-0.10.1-py3.4.egg/flask/app.py", line 1817, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/dowst/projets/labresult/lib/python3.4/site-packages/Flask-0.10.1-py3.4.egg/flask/app.py", line 1475, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/dowst/projets/labresult/lib/python3.4/site-packages/Flask-0.10.1-py3.4.egg/flask/app.py", line 1461, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/dowst/projets/labresult/lib/python3.4/site-packages/Flask_Admin-1.0.9-py3.4.egg/flask_admin/base.py", line 68, in inner
+    return self._run_view(f, *args, **kwargs)
+  File "/home/dowst/projets/labresult/lib/python3.4/site-packages/Flask_Admin-1.0.9-py3.4.egg/flask_admin/base.py", line 344, in _run_view
+    return fn(self, *args, **kwargs)
+  File "/home/dowst/projets/labresult/labresult/views/credential/__init__.py", line 43, in index
+    labresult.app.logger.error(traceback.format_exc())
+Message: 'Traceback (most recent call last):\n  File "/home/dowst/projets/labresult/lib/python3.4/site-packages/mongoengine-0.8.7-py3.4.egg/mongoengine/queryset/base.py", line 182, in get\n    result = next(queryset)\n  File "/home/dowst/projets/labresult/lib/python3.4/site-packages/mongoengine-0.8.7-py3.4.egg/mongoengine/queryset/base.py", line 1137, in __next__\n    raw_doc = next(self._cursor)\n  File "/home/dowst/projets/labresult/lib/python3.4/site-packages/pymongo-2.8-py3.4-linux-x86_64.egg/pymongo/cursor.py", line 1083, in __next__\n    raise StopIteration\nStopIteration\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File "/home/dowst/projets/labresult/labresult/views/credential/__init__.py", line 33, in index\n    form.code.data.strip()).get()\n  File "/home/dowst/projets/labresult/lib/python3.4/site-packages/mongoengine-0.8.7-py3.4.egg/mongoengine/queryset/base.py", line 186, in get\n    raise queryset._document.DoesNotExist(msg)\nlabresult.model.DoesNotExist: User matching query does not exist.\n'
+Arguments: ()
+]]></system-err></testcase><testcase classname="testweb.TestWeb" name="test_document_api" time="0.590"></testcase><testcase classname="testweb.TestWeb" name="test_file_api" time="2.709"></testcase><testcase classname="testweb.TestWeb" name="test_get_img" time="0.286"></testcase><testcase classname="testweb.TestWeb" name="test_labo_api" time="0.119"></testcase><testcase classname="testweb.TestWeb" name="test_login_logout" time="0.092"></testcase><testcase classname="testweb.TestWeb" name="test_option" time="0.162"></testcase><testcase classname="testweb.TestWeb" name="test_printer_api" time="0.090"></testcase><testcase classname="testweb.TestWeb" name="test_printing" time="0.303"></testcase><testcase classname="testweb.TestWeb" name="test_tasks" time="0.316"></testcase><testcase classname="testweb.TestWeb" name="test_user_api" time="0.421"></testcase><testcase classname="testweb.TestWeb" name="test_users_forms" time="0.233"></testcase></testsuite>

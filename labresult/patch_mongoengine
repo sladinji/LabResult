@@ -1,0 +1,7 @@
+ib/python3.4/site-packages/flask_mongoengine-0.7.1-py3.4.egg/flask_mongoengine/wtf/fields.py line 79 :
+
+    def pre_validate(self, form):
+        if self.data is not None:
+            if not self.data and not self.allow_blank:
+                raise ValidationError(_(u'Not a valid choice'))
+

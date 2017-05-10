@@ -1,0 +1,23 @@
+
+{% extends 'admin/model/list_custo.html' %}
+
+{% block body %}
+<div class="panel panel-default margB10">
+  <div class="panel-heading txt20">
+      <i class="flaticon-printer53"></i> <span class="tbleuLR">Paramétrer les imprimantes</span>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12 col-sm-12">
+    <h4 class="TTbleu txtmajus"><span class="flaticon-info28 nomargin txt30"></span> Pourquoi imprimer depluis LabResult ?</h4>
+  </div>
+  <div class="col-md-6 col-sm-6">
+      <p class="txtjusti">En gérant l'impression au niveau de LabResult, vous <span class="txtgras">centralisez ainsi toute votre partie post-analytique</span>. Il est ensuite possible de <span class="txtgras">réduire vos impressions</span> en n'imprimant que les documents qui n'ont pas été récupérés sur le serveur de résultats.</p>
+  </div>
+  <div class="col-md-6 col-sm-6 txtcenter txtgrisf">
+    <span class="flaticon-printer53 nomargin txt60"></span>
+  </div>
+</div>
+{{ super()  }}
+  <!-- Content ends -->
+{% endblock %}

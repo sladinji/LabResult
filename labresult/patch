@@ -1,0 +1,8 @@
+pour unset_value : https://github.com/mrjoes/flask-admin/issues/543
+
+*****
+
+pour la suppression des listfield via interface web (printers d'un labo par
+exemple ) :
+https://github.com/gordol/flask-admin/commit/4102823a638a41b178cf8f881f479aa2ba42c5aa
+

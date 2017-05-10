@@ -1,0 +1,517 @@
+from flask import url_for, redirect, flash, request
+from flask.ext.admin import  expose
+from flask.ext.admin.actions import action
+from flask.ext.admin.babel import lazy_gettext
+from flask_admin.form import rules
+from flask.ext.admin.helpers import get_redirect_target
+from flask.ext.babelex import gettext
+from jinja2 import Markup
+from wtforms.fields import PasswordField, FileField, TextField
+from wtforms.widgets import TextArea
+from flask_admin.form.fields import Select2Field
+
+
+import labresult
+from labresult.api.board import Board
+from labresult.builder.tasks import integrate
+from labresult.builder.validator import Validator
+from labresult.lib.auth import password_check, no_duplicate_login
+from labresult.lib.model import set_option, get_option
+from labresult.lib.views import AuthView, frmt_pat_name, frmt_acl, frmt_healthworker_name, frmt_group_name, format_user, format_members, frmt_numdos, frmt_doc_type
+from labresult.model import Option, FileOption, Document, HealthWorker
+from labresult.model import Patient, FailedLogin, Administrator
+from labresult.printing import printdoc
+
+
+labo_markup = Markup('<span class="itemic flaticon-microscope23"></span> Laboratoire')
+file_markup = Markup('<span class="itemic flaticon-text20"></span> Fichiers')
+id_markup = Markup('<span class="flaticon-personal19"></span> Identité')
+con_markup = Markup('<span class="flaticon-password17"></span> Accès')
+adr_markup = Markup('<span class="flaticon-house109"></span> Adresse')
+ct_markup = Markup('<span class="flaticon-phone43"></span> Contacts')
+grp_markup = Markup('<span class="flaticon-multiple25"></span> Groupes')
+opt_markup = Markup('<span class="itemic flaticon-adjust3"></span> Option')
+opts_markup = Markup('<span class="itemic flaticon-adjust3"></span> Options')
+act_markup = Markup('<span class="itemic flaticon-adjust3"></span> Activation')
+dif_markup = Markup('<span class="itemic flaticon-programming"></span> Règle de diffusion')
+print_markup = Markup('<span class="itemic flaticon-printer53"></span> Imprimante')
+auth_markup = Markup('<span class="itemic flaticon-adjust3"></span> Authorisations')
+# Customized admin views
+class UserView(AuthView):
+    allowed_users = [ 'User.Administrator']
+    column_filters = ('name', 'mobile', 'fixe', 'email', 'external_id',
+    'account_activated')
+
+    column_searchable_list = ('name', 'mobile', 'fixe', 'email', 'external_id')
+    column_list = ( 'name',  'mobile', 'fixe', 'email', 'account_activated' )
+
+    form_excluded_columns = ('password')
+
+
+    form_extra_fields = {
+                    'password_holder': PasswordField('Mot de passe', [password_check]),
+                    'confirm': PasswordField('Confirmation')
+                        }
+
+
+    form_args = dict(
+                login = {'validators': [no_duplicate_login]},
+                birthdate=dict(format='%d/%m/%Y')
+                # changes how the input is parsed by strptime (12 hour time)
+                )
+    form_widget_args = dict(
+                birthdate={
+                    'data-date-format': u'dd/mm/yyyy',
+                    # changes how the DateTimeField displays the time
+                    }
+                )
+
+    column_labels = dict(
+            name = gettext("Nom"),
+            account_activated = gettext("Compte activé"),
+            groups = gettext("Groupes"),
+            comment = gettext("Commentaire"),
+            members = gettext("Membres"),
+            )
+
+    def on_model_change(self, form, model, is_created):
+        if form.password_holder.data:
+            model.set_pass(form.password_holder.data)
+
+class AdminView(UserView):
+    list_template="admin/admin_list.html"
+    column_list = ( 'name',  'role', 'fixe', 'email', 'account_activated')
+    form_create_rules = [
+        rules.FieldSet(('name','mobile', 'fixe', 'email' ),id_markup),
+        rules.FieldSet(('login', 'password_holder', 'confirm', 'account_activated'),
+            con_markup),
+        rules.FieldSet(('role', 'special_acl', "labos"),
+            auth_markup),
+        ]
+
+    form_edit_rules = form_create_rules
+
+    def on_model_change(self, form, model, is_created):
+        """
+        Empty labos list when no labo id is posted (looks like a flask admin bug)
+        """
+        if not 'labos' in request.form :
+            model.labos = []
+
+class RoleView(AuthView):
+    list_template="admin/role_list.html"
+    allowed_users = [ 'User.Administrator']
+    form_create_rules = [
+        rules.FieldSet(('name','acl' ),id_markup),
+    ]
+    form_edit_rules = form_create_rules
+    column_list = ( 'name', 'acl')
+    column_formatters = {
+            'acl' : frmt_acl,
+            }
+
+class PatientView(UserView):
+    list_template="admin/patient_list.html"
+    form_create_rules = [
+        rules.FieldSet(('name', 'external_id', 'birthdate', 'secu'), id_markup),
+        rules.FieldSet(('login', 'password_holder', 'confirm', 'account_activated'), con_markup),
+        rules.FieldSet(('address1', 'address2', 'address3'), adr_markup),
+        rules.FieldSet(('mobile', 'fixe', 'email'), ct_markup),
+        ]
+
+    form_edit_rules = form_create_rules
+
+
+    def on_model_delete(self, model):
+        Document.objects(patient__user =  model
+            ).delete()
+        Patient.objects(tutor=model
+                ).update(set__tutor=None)
+
+class HealthWorkerView(UserView):
+    list_template="admin/ps_list.html"
+    column_list = ( 'name',  'mobile', 'fixe',
+            'email','groups', 'account_activated' )
+
+    column_formatters = {
+            'groups' : frmt_group_name,
+            }
+
+    form_create_rules = [
+        rules.FieldSet(('name', 'external_id','mobile', 'fixe', 'email'), id_markup),
+        rules.FieldSet(('login', 'password_holder', 'confirm', 'account_activated'), con_markup),
+        rules.FieldSet(('address1', 'address2', 'address3'), adr_markup),
+        rules.FieldSet(('groups',), grp_markup),
+        ]
+
+    form_edit_rules = form_create_rules
+
+    def on_model_delete(self, model):
+        """Delete hw reference in documents"""
+        Document.objects(healthworkers__match = {
+            'user' : model.id,
+            }
+            ).update(pull__healthworkers__user=model)
+
+
+class GroupView(UserView):
+    list_template="admin/group_list.html"
+    column_list = ( 'name', 'comment','members', 'account_activated', )
+
+    form_create_rules = [
+        rules.FieldSet(('name', "comment" ), id_markup),
+        rules.FieldSet(('login', 'password_holder', 'confirm', 'account_activated'), con_markup),
+        rules.FieldSet(('mobile', 'fixe', 'email'), ct_markup),
+        rules.FieldSet(('address1', 'address2', 'address3'), adr_markup),
+        ]
+    form_widget_args = {
+            'name': {
+                'style' : {
+                    'color': 'red',
+                    }
+                }
+            }
+
+    form_edit_rules = form_create_rules
+    create_template = 'rule_create.html'
+    edit_template = 'rule_edit.html'
+
+    column_formatters = {
+            'members' : format_members,
+            }
+    def on_model_delete(self, model):
+        """Delete  group reference in hw and documents"""
+        for cls in Document, HealthWorker:
+                cls.objects(groups__match = {
+                    'user': model.id,
+                    }
+                ).update(pull__groups__user=model)
+
+class Biolos():
+    """
+    Object used to filter biologiste in Document form
+    """
+
+    def __iter__(self):
+        for admin in Administrator.objects :
+            if admin.role and admin.role.name == 'biologiste' :
+                yield str(admin.id), admin.name
+
+
+class DocumentView(AuthView):
+
+    allowed_users = [ 'User.Administrator']
+    list_template="admin/doc_admin_list.html"
+    # True means descending = True
+    column_default_sort = ('capture_date', True)
+    column_list = ( 'doc_type', 'date_dossier', 'numdos', 'patient',
+            'healthworkers_name' )
+    column_labels = dict(data = gettext("Fichiers"), doc_type = gettext("Type"),
+            healthworkers_name = gettext("Professionnels"),
+            patient_name = gettext("Patient"), numdos = gettext("Dossier"),
+            origin = gettext("Provenance"),
+            status = gettext("Statut"),
+            )
+
+    column_filters = ['numdos', 'patient_name', 'healthworkers_name',
+            'status', 'origin']
+
+    column_searchable_list = ('numdos', 'patient_name', 'healthworkers_name')
+
+    form_columns = ( 'version', 'current_version', 'labo', 'biologiste', 'patient',
+    'healthworkers', 'groups', 'log', 'doc_type', 'numdos',
+    'traceback', 'data')
+
+    column_formatters = {
+            'patient' : frmt_pat_name,
+            'healthworkers_name' : frmt_healthworker_name,
+            'numdos': frmt_numdos,
+            'doc_type': frmt_doc_type,
+            }
+
+    form_extra_fields = {
+        'biologiste': Select2Field(
+            gettext('Biologiste'),
+             choices = Biolos(),
+             #allow_blank = True,
+             )
+        }
+
+    def edit_form(self, obj=None):
+        form = super(DocumentView,self).edit_form(obj)
+        import pdb; pdb.set_trace()
+        return form
+
+    def get_query(self):
+        return Board()._get_qry()
+
+    def get_count_query(self):
+        return self.get_query().count()
+
+    def on_model_change(self, form, model, is_created):
+        if form.biologiste.data:
+            model.biologist = Administrator.objects.get(id=form.biologiste.data)
+
+    def  after_model_change(self, form, model, is_created):
+        if is_created :
+            #build doc, not used for now (creation is done via restful api)
+            integrate.delay(doc_id=model.id)
+        else:
+            #reset healthworkers_name, corres_name...
+            Validator.doc_validator.denormalize(model)
+
+
+    @expose('/reset_doc/<string:id>')
+    def reset_doc(self, id):
+        return_url = get_redirect_target() or url_for('.index_view')
+        doc_id = integrate.delay(doc_id=id).get()
+        doc = Document.objects(id=doc_id).get()
+        if doc.log :
+            msg = gettext(doc.log).lower()
+            prefix = gettext("Problème avec le document : ")
+            flash("%s %s" % (prefix, msg), 'error')
+        else:
+            flash(gettext('Document repassé : %s').format(doc))
+        return redirect(return_url)
+
+    @action('reset',
+            lazy_gettext('Repasser'),
+            lazy_gettext('Êtes vous sur de vouloir repasser les documents '
+                'sélectionnés ?'))
+    def action_reset(self, ids):
+        try:
+            for pk in ids:
+                integrate.delay(doc_id = pk)
+            flash("Documents correctement envoyés en ré-intégration")
+        except Exception as ex :
+            msg = gettext("Erreur lors de la réintégration des documents (%s)")
+            flash( msg.format(str(ex)), 'error')
+
+    @expose("/print_doc/<string:id>")
+    def print_doc(self, id):
+        return_url = get_redirect_target() or url_for('.index_view')
+        try :
+            doc = Document.objects.get(id=id)
+            printdoc(doc)
+            job= doc.print_jobs[-1]
+            msg = gettext("Impression OK ( id du job : %s )")
+            flash( msg.format(job.cups_job_id))
+        except Exception as ex:
+            flash(gettext("Erreur lors de l'impression du document"
+                " (%s)").format(str(ex)),
+            'error')
+        return redirect(return_url)
+
+    @action('print',
+            lazy_gettext('Imprimer'),
+            lazy_gettext('Êtes vous sur de vouloir imprimer les documents '
+                'sélectionnés ?'))
+    def action_print(self, ids):
+        try:
+            for pk in ids:
+                doc = Document.objects.get(id=pk)
+                printdoc(doc)
+            flash(gettext("Impression demandée pour les document"
+                " sélectionnés.")
+                )
+        except Exception as ex :
+            msg = gettext(
+                    "Erreur lors de la demande d'impression des documents (%s)"
+                    )
+            flash(msg.format(str(ex)), 'error')
+
+
+class LaboView(AuthView):
+    list_template="admin/labo_list.html"
+    allowed_users = [ 'User.Administrator']
+    column_searchable_list = ('external_id',  'name', 'address')
+    column_filters = ('external_id', 'name', 'address')
+    form_create_rules = [
+        rules.FieldSet(('name', 'external_id', 'address'), labo_markup),
+        rules.FieldSet(('printers', 'underlays', 'is_default'), opts_markup),
+        ]
+    form_edit_rules = form_create_rules
+    column_labels = dict(
+            name = gettext("Nom"),
+            external_id= gettext("Identifiant externe"),
+            address = gettext("Adresse"),
+            is_default = gettext("Labo par défaut"),
+            printers = gettext("Imprimantes"),
+            underlays = gettext("Entêtes"),
+            )
+
+
+class PrinterView(AuthView):
+    allowed_users = [ 'User.Administrator']
+    column_searchable_list = ('name',  'cups_host')
+    column_filters = ('name', 'cups_host')
+    form_create_rules = [
+        rules.FieldSet(('name', 'cups_host', 'cups_port'), print_markup),
+        rules.FieldSet(('is_default', 'activated', 'options'), opts_markup),
+        ]
+    form_edit_rules = form_create_rules
+    list_template="admin/printer_list.html"
+
+class PublicationView(AuthView):
+    list_template="admin/pub_list.html"
+    allowed_users = ["User.Administrator"]
+    column_searchable_list = ('comment',  'user', 'rule', 'msg_error')
+    column_filters = ('comment', 'user', 'rule', 'activated')
+    column_list = ( 'user', 'comment', 'msg_error', 'activated')
+    form_create_rules = [
+        rules.FieldSet(('user', 'rule', 'msg_error'), dif_markup),
+        rules.FieldSet(('activated', 'comment'), act_markup),
+        ]
+    column_labels = dict(
+            user= gettext("Utilisateur"),
+            comment = gettext("Commentaire"),
+            msg_error = gettext("Message"),
+            activated = gettext("Activé"),
+            )
+    form_edit_rules = form_create_rules
+
+
+    def  after_model_change(self, form, model, is_created):
+        """
+        restart celery in order to refresh rules
+        """
+        labresult.celery.control.broadcast('pool_restart')
+
+class UnderlayView(AuthView):
+    allowed_users = [ 'User.Administrator']
+    form_create_rules = [
+        rules.FieldSet(('name', 'comment', 'all_pages'), opts_markup),
+        rules.FieldSet(('recto', 'verso', 'doc_types',), file_markup),
+        ]
+    form_edit_rules = form_create_rules
+    list_template="admin/header_list.html"
+
+class PolymorphField(TextField):
+    """
+    Option value can be file or string, this field return the appropriate
+    widget according to requested option.
+    """
+    @property
+    def widget(self):
+        m = Option.objects(id=request.args['id']).get()
+        if isinstance(m, FileOption):
+            return FileField.widget
+        else :
+            return TextArea() if m.visible else PasswordField.widget
+
+class OptionView(AuthView):
+    list_template="admin/option_list.html"
+    allowed_users = [ 'User.Administrator']
+    form_create_rules = [
+        rules.FieldSet(('key','value', 'description' ),opt_markup),
+        ]
+
+    column_list = ( 'key', 'value', 'description')
+    form_columns = ( 'key', 'value', 'description')
+    form_edit_rules = form_create_rules
+    column_filters = ('key',  'description')
+    column_searchable_list = ('key', 'description')
+    form_overrides = dict(value=PolymorphField)
+    column_formatters = {
+            'value': lambda v, c, m, p:
+                m.value if m.visible else "*" * len(m.value),
+                }
+
+    def create_model(self, form):
+        try :
+            model = self.model()
+            form.populate_obj(model)
+            set_option(model.key, model.value, model.description)
+        except Exception as ex:
+            flash(gettext('%(error)s', error=str(ex)),
+                  'error')
+            return False
+        return True
+
+    def update_model(self, form, model):
+        try :
+            form.populate_obj(model)
+            set_option(model.key, model.value, model.description, model.visible)
+        except Exception as ex:
+            if 'duplicate key' in str(ex) :
+                flash(gettext(
+                    "L'option est de type %(type)s. La valeur que vous avez "
+                    "saisie est incorrecte pour ce type."
+                    "Si vous souhaitez changer de type d'option, vous devez d'abord la supprimer.",
+                type=model.__class__.__name__),
+                  'error')
+            else :
+                flash(gettext('%(error)s', error=str(ex)),
+                  'error')
+            return False
+        return True
+
+class DocumentPatientView(AuthView):
+    allowed_users = [ 'User.Patient']
+    action_disallowed_list = ['delete']
+    can_create = False
+    can_edit = False
+    can_delete = True
+    column_list = ( 'doc_type', 'date_dossier', 'numdos')
+    column_labels = dict(doc_type='Type de document', date_dossier='Date',
+    numdos='Numéro de dossier')
+    list_template="admin/doc_patient_list.html"
+    column_formatters = {'doc_type': frmt_doc_type,}
+
+    def get_query(self):
+        return Board()._get_qry()
+
+    def get_count_query(self):
+        return self.get_query().count()
+
+class DocumentHealthWorkerView(DocumentPatientView):
+    allowed_users = [ 'User.HealthWorker']
+    column_list = ('patient_name', 'date_dossier', 'doc_type', 'numdos')
+    column_searchable_list = ('numdos', 'patient_name')
+    list_template="admin/doc_hw_list.html"
+    column_formatters = {'doc_type': frmt_doc_type,}
+
+class DocumentGroupView(DocumentHealthWorkerView):
+    allowed_users = [ 'User.Group']
+    list_template="admin/group_list.html"
+
+class UserLogView(AuthView):
+    list_template="admin/log_list.html"
+    column_default_sort = ('date', True)
+    column_list = ('date','user', 'ip', 'url','args', 'platform', 'uas' )
+    column_labels = dict(
+            user =gettext('Utilisateur'),
+            platform=gettext('Système'),
+            uas=gettext('Détails système'),
+            ip='IP',
+            url='URL',
+            args="Arguments",
+            )
+    column_filters = ('date',  'user_name', 'ip', 'url', 'platform', 'uas')
+    allowed_users = [ 'User.Administrator']
+    column_searchable_list = ('user_name', 'url')
+    can_create = False
+    can_edit = False
+    can_delete = False
+    column_formatters = {'user': format_user,
+            'date': lambda v, c, m, p: m.date.strftime("%d-%m-%y %H:%M:%S")}
+
+class IPUnblockView(AuthView):
+    allowed_users = ['User.Administrator']
+    can_edit = False
+    can_create = False
+    list_template="admin/ip_lock_list.html"
+
+    @property
+    def query(self):
+        max_fail =get_option("max_login_attempt", 20, gettext(
+            "Nombre maximal d'échec de connexion avant blocage."
+            ))
+        return FailedLogin.objects( total__gt = max_fail)
+
+    def get_query(self):
+        return self.query
+
+    def get_count_query(self):
+        return self.query.count()
+

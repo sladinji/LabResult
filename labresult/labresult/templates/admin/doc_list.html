@@ -1,0 +1,85 @@
+{% extends 'admin/model/list_custo.html' %}
+{% block head %}
+{{ super() }}
+<div ng-app="LabApp">
+{% endblock %}
+{% block body %}
+<div class="row">
+  <div class="col-md-6 col-sm-6 txtcenter txtgrisf">
+  </div>
+  <div class="col-md-6 col-sm-6 txtcenter txtgrisf">
+    <span class="flaticon-drawer4 nomargin txt60"></span>
+  </div>
+</div>
+{{ super()  }}
+{% endblock %}
+
+{% block list_row_actions scoped %}
+    <div class="btn-group">
+    {%- if not row.log -%}
+      <button type="button" class="btn btn-sm btn-default" ng-controller="ImagesModalCtrl" ng-click="show_modal_images('{{ get_pk_value(row) }}')">
+	<span class="glyphicon glyphicon-eye-open"></span> Voir
+      </button>
+    {%- else -%}
+      <button type="button" class="btn btn-sm btn-default" ng-controller="WarningModalCtrl" ng-click="show_modal_errors('{{ get_pk_value(row) }}')" >
+	<span class="glyphicon glyphicon-warning-sign"></span>
+      </button>
+    {%- endif -%}
+      <button type="button" class="btn btn-sm btn-default dropdown-toggle">
+        <span class="caret"></span>
+        <span class="sr-only"></span>
+      </button>
+    <ul class="dropdown-menu" role="menu">
+    {%- if not row.log -%}
+        <li><a href="{{ url_for('file', id=get_pk_value(row), format='pdf', as_attachment=True) }}" target="_blank">
+        <span class="glyphicon glyphicon-download"></span> {{ _gettext("Télécharger en PDF")}}</a>
+	</li>
+    {%- endif -%}
+        {%- if admin_view.can_edit -%}
+        <li><a href="{{ url_for('file', id=get_pk_value(row), format='raw', as_attachment=True)}}" target="_blank">
+        <span class="glyphicon glyphicon-download"></span> {{ _gettext("Télécharger l'original")}}</a>
+	</li>
+        <li><a href="{{ url_for('file', id=get_pk_value(row), format='png', as_attachment=True)}}" target="_blank">
+        <span class="glyphicon glyphicon-download"></span> {{ _gettext("Télécharger l'image PNG")}}</a>
+	</li>
+        {%- endif -%}
+	{%- if admin_view.can_edit -%}
+	<li><a href="{{ url_for('.edit_view', id=get_pk_value(row), url=return_url) }}">
+	<span class="glyphicon glyphicon-pencil"></span> {{ _gettext("Éditer") }}</a>
+	</li>
+        <li><a href="{{ url_for('document.reset_doc', id=get_pk_value(row),
+        url=return_url) }}">
+        <span class="glyphicon glyphicon-repeat"></span> {{ _gettext("Repasser le document") }}</a>
+	</li>
+        <li><a href="{{ url_for('document.pdf2xml', id=get_pk_value(row)) }}">
+        <span class="glyphicon glyphicon-th-list"></span> {{ _gettext("Télécharger coordonnées XML") }}</a>
+	</li>
+    {%- if not row.log -%}
+        <li>
+	  <a href="{{ url_for('document.print_doc', id=get_pk_value(row), url=return_url) }}">
+	    <span class="glyphicon glyphicon-print"></span> {{ _gettext("Imprimer") }}
+	  </a>
+	</li>
+        {%- endif -%}
+    {%- endif -%}
+        {%- if admin_view.can_delete -%}
+	<li>
+	  <form class="icon" method="POST" action="{{ url_for('.delete_view', id=get_pk_value(row), url=return_url) }}">
+	  {% if csrf_token %}
+	    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+	  {% endif %}
+	    <button class="btn btn-sm btn-block btn-danger padGD20" onclick="return confirm('{{ _gettext("Êtes vous sûr de vouloir supprimer ce document ?") }}');">
+	      <span class="glyphicon glyphicon-trash"></span> {{ _gettext("Supprimer") }}
+	    </button>
+	  </form>
+	</li>
+	{%- endif -%}
+    </ul>
+    </div>
+
+    {% endblock %}
+
+{% block tail %}
+</div> <!-- end div ng-app -->
+{{ super() }}
+{% endblock %}

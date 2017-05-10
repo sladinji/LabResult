@@ -1,0 +1,4 @@
+#!/bin/bash
+# Start workers only for conversion queue
+
+python runcelery.py conf=t300 worker -l INFO -n default --concurrency=4 -b amqp://guest@t300/ -n sony_conversion -Q for_conversion

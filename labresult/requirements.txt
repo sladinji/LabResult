@@ -1,0 +1,14 @@
+nose
+coverage
+pylint
+flask-admin >= 1.0.8
+flask-mongoengine
+flask-restful
+flask-wtf
+flask-debugtoolbar
+flask-babelex
+flask-login
+celery
+pypdf2
+pillow
+flask

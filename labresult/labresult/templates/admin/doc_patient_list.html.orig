@@ -1,0 +1,50 @@
+{% extends 'admin/doc_list.html' %}
+
+{% block body %}
+<h1 class="title">Mes documents<i class="flaticon-drawer4 bigic"></i></h1>
+{{ super()  }}
+ <div class="content">
+    <div class="container">
+
+      <div class="row">
+         <div class="col-md-12">
+            <!-- Resume starts -->
+            <div class="resume">
+               <div class="row">
+                  <div class="col-md-12">
+                     <!-- Resume -->
+                     <div class="row">
+                        <div class="col-md-12">
+                          <!-- Info -->
+                           <div class="rblock">
+                              <div class="row">
+                                 <div class="col-md-3">
+                                    <h3 class="title"><i class="flaticon-two185"></i>Informations</h3>
+                                 </div>
+                                 <div class="col-md-9">
+                                    <div class="rinfo">
+                                       <!-- Title -->
+                                       <h4>Conservation de vos résultats</h4>
+                                       <!-- Meta -->
+                                       <div class="rmeta">Cher patient,</div>
+                                       <!-- Details -->
+                                       <p>Afin de vous laissez un maximum de control sur vos données, vous avez la possibilité de supprimer vos résultats du serveur. Les résultats n'étant plus disponible sur le serveur après leurs suppressions, nous vous conseillons de télécharger les résultats afin d'en conserver une copie avant de procéder à leur suppression sur le serveur.</p>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+
+                           <hr />
+
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+          </div>
+        </div>
+
+    </div>
+  </div>
+  <!-- Content ends -->
+{% endblock %}

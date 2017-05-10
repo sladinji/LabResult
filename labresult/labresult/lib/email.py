@@ -1,0 +1,83 @@
+import os
+import re
+import smtplib
+import traceback
+import uuid
+from datetime import datetime, timedelta
+from email.headerregistry import Address
+from email.message import EmailMessage
+from email.mime.image     import MIMEImage
+
+from flask.ext.babelex import gettext
+
+import labresult
+from labresult.lib.emailtemplates import credential
+from labresult.lib.message import log_message
+from labresult.lib.model import get_option
+
+now = datetime.now
+
+def send_email_credential(user):
+    """
+    Send credentials to user
+    :param user: :class:`labresult.model.User`
+    """
+    if not user.email :
+        labresult.app.logger.warning("%s has no email" % user.email)
+        return False
+
+    # wait ten minutes between to sending
+    for message in [ m for m in user.messages if m.title == "credential" and
+            m.channel == "email" ]:
+        if (now() - message.date) < timedelta(
+                minutes=get_option('crendential_email.tempo', 10,
+    gettext("Minutes avant l'envoi d'un deuxieme email"))):
+            labresult.app.logger.warning("Credential email already sent to %s" % user.email)
+            return True
+    # Create the base text message.
+    msg = EmailMessage()
+    msg['Subject'] = get_option("credential_email.title",
+        gettext("Accès à mes résultats"))
+    msg['From'] = Address("",
+            get_option('crendential_email.from_address',
+                "contact@labresult.fr",
+                gettext("Adresse email de l'envoyeur."),
+                )
+            )
+    msg['To'] = (Address("", user.email),)
+    #generate txt from html
+    template = get_option("credential_email.html_content",
+            credential.html_content,
+            gettext("Contenu du mail d'authentification"),
+            )
+    txt_content = re.sub("<[^>]+>",
+            "",
+            template.replace("<br>",'\n').format(code=user.credential_code,
+                logo_cid=""))
+
+    msg.set_content(txt_content)
+
+    logo_cid = str(uuid.uuid4())
+    msg.add_alternative(template.format(logo_cid=logo_cid,
+        code = user.credential_code),
+            'html', 'utf-8')
+    # Now add the related image to the html part.
+    default_logo = open(os.path.join(os.path.dirname(__file__), "data",
+        "logo.png"), 'rb').read()
+    logo = get_option("credential_email.logo", default_logo)
+    msg_image = MIMEImage(logo, name='logo.png',
+            _subtype="image/png" )
+    msg.attach(msg_image)
+    msg_image.add_header('Content-ID', '<{}>'.format(logo_cid))
+    # Send the message via local SMTP server.
+    try :
+        with smtplib.SMTP_SSL(get_option("smtp_server")) as s:
+            s.login(get_option("smtp_login"), get_option("smtp_password"))
+            s.send_message(msg)
+            log_message(user, "credential", "email", get_option("smtp_server"),
+                    txt_content)
+            return True
+    except Exception :
+        error = traceback.format_exc()
+        labresult.app.logger.error(error)
+        return False

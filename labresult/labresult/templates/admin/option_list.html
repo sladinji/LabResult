@@ -1,0 +1,22 @@
+{% extends 'admin/model/list_custo.html' %}
+
+{% block body %}
+<div class="panel panel-default margB10">
+  <div class="panel-heading txt20">
+      <i class="flaticon-adjust3"></i> <span class="tbleuLR">Paramétrer le serveur</span>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12 col-sm-12">
+    <h4 class="TTbleu txtmajus"><span class="flaticon-dangerous3 nomargin txt30"></span> Section réservée à des utilisateurs avancés</h4>
+  </div>
+  <div class="col-md-6 col-sm-6">
+    <p class="txtjusti">Toutes les options définies dans cette section sont prises en compte automatiquement par le système. Une valeur erronnée peut entrainer un dysfonctionnement du système ou réduire le niveau de sécurité du système. Cette section ne doit être modifiée que par un utilisateur avisé et ne doit en aucun cas être accessible aux autres utilisateurs.</p>
+  </div>
+  <div class="col-md-6 col-sm-6 txtcenter txtgrisf">
+    <span class="flaticon-adjust3 nomargin txt60"></span>
+  </div>
+</div>
+{{ super()  }}
+  <!-- Content ends -->
+{% endblock %}

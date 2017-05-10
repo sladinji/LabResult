@@ -1,0 +1,22 @@
+{% extends 'admin/model/list_custo.html' %}
+
+{% block body %}
+<div class="panel panel-default margB10">
+  <div class="panel-heading txt20">
+      <i class="flaticon-microscope23"></i> <span class="tbleuLR">Paramétrer les laboratoires</span>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12 col-sm-12">
+    <h4 class="TTbleu txtmajus"><span class="flaticon-info28 nomargin txt30"></span> Quels sont les paramétrages possibles pour un laboratoire ?</h4>
+  </div>
+  <div class="col-md-6 col-sm-6">
+      <p class="txtjusti">Pour chaque laboratoire, il est possible d'<span class="txtgras">associer des imprimantes</span> pour chaque type de document. Les impressions peuvent être lancées de manière automatique ou manuelle. Il est également possible d'<span class="txtgras">ajouter une entête pour chaque type de document</span> afin d'avoir exactement le même rendu entre la version imprimée et celle numérique.</p>
+  </div>
+  <div class="col-md-6 col-sm-6 txtcenter txtgrisf">
+    <span class="flaticon-microscope23 nomargin txt60"></span>
+  </div>
+</div>
+{{ super()  }}
+  <!-- Content ends -->
+{% endblock %}

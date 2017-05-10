@@ -1,0 +1,63 @@
+{% extends 'admin/master.html' %}
+{% block body %}
+<div class="row">
+      <div class="col-md-12">
+	      <p class="txtcenter tbleuLR txt18">Obtenez si besoin vos
+              identifiants puis connectez vous.</p><br>
+      </div>
+      <div class="col-md-5">
+            <div class="panel panel-success">
+                  <div class="panel-heading">
+			  <h3 class="panel-title"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> {{ gettext("Obtenir mes identifiants") }}</h3>
+                  </div>
+                  <div class="panel-body">
+			  <p>{{ gettext("Saisissez l'adresse email ou le numéro de mobile que vous avez transmis au laboratoire")}} </p>
+                        <form class="" role="form" name="" action="credential" method="POST">
+				<input type="text" class="form-control margB10" placeholder="{{ gettext("Adresse email ou numéro de mobile") }}" autofocus name="channel" id="channel">
+                                {% if cform.channel.errors %}
+                                        <ul class="errors">
+                                            {% for error in cform.channel.errors %}
+                                            <li>{{ error}}</li>
+                                            {% endfor %}
+                                        </ul>
+                                {% endif %}
+                              <button class="btn btn-success btn-block" type="submit">
+				      <span class="glyphicon glyphicon-user" aria-hidden="true"></span> {{gettext("Valider")}}
+                              </button>
+                        </form>
+                  </div>
+             </div>
+      </div>
+      <div class="col-md-2">
+      </div>
+      <div class="col-md-5">
+            <div class="panel panel-info">
+                  <div class="panel-heading">
+                        <h3 class="panel-title"><span class="glyphicon glyphicon-log-in" aria-hidden="true"></span> Me connecter</h3>
+                  </div>
+                  <div class="panel-body">
+                        <p>Saisissez vos identifiants ci-dessous pour accéder au service</p>
+                        <form class="form-signin" role="form" name="loginform" action="." method="POST">
+                              <input type="text" class="form-control margB10" placeholder="{{ gettext("Identifiant") }}" required autofocus name="login" id="login">
+                              <input type="password" class="form-control margB10" placeholder="{{ gettext("Mot de passe") }}" required name="password" id="password">
+                              <button class="btn btn-info btn-block" type="submit">
+                                    <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span> Me connecter
+                              </button>
+                        </form>
+                  </div>
+	      </div>
+      </div>
+      <div class="col-md-12">
+	      <hr>
+      </div>
+      <div class="col-md-7">
+	      <p class="tbleuLR txt16">Vous pouvez également également tester notre application mobile Android :</p>
+      </div>
+      <div class="pull-left col-md-5">
+	      <a class="btn btn-success" href="/static/LabMobile-0.1.apk"><i class="flaticon-android2"></i> LabMobile pour Android</a>
+      </div>
+      <div class="col-md-6">
+	      <p class="tbleuLR txt16">Une version iOS sera prochainement disponible. </p>
+      </div>
+</div>
+{% endblock %}

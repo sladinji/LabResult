@@ -1,0 +1,91 @@
+{% extends 'admin/base.html' %}
+{% block title %}{% if admin_view.category %}{{ admin_view.category|striptags}} - {% endif %}{{ admin_view.name|striptags }} - {{admin_view.admin.name|striptags }}{% endblock %}
+{% block head_css %}
+  <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+  <link data-require="font-awesome@*" data-semver="4.0.3" rel="stylesheet" href="/static/css/font-awesome.css" />
+  <link rel="stylesheet" href="/static/css/bootstrap-modal-carousel.min.css">
+  <link rel="stylesheet" href="/static/css/angular-carousel.min.css">
+  <link rel="stylesheet" type="text/css" href="/static/css/flaticon.css"> 
+  <link rel="stylesheet" href="/static/css/style_LR.css">
+  <link rel="shortcut icon" href="/static/favicon.png">
+{% endblock %}
+{% block tail_js %}
+  {{super()}}
+  <script data-require="angular.js@1.2.x" src="/static/js/angular.js" data-semver="1.2.9"></script>
+  <script data-require="ui-bootstrap@*" data-semver="0.10.0" src="/static/js/ui-bootstrap-tpls-0.10.0.min.js"></script>
+  <script data-require="angular-animate@*" data-semver="1.2.9" src="/static/js/angular-animate.js"></script>
+  <script src="/static/js/angular-ui-router.min.js"></script>
+  <script src="/static/js/angular-touch.js"></script>
+  <script src="/static/js/angular-carousel.min.js"></script>
+  <script src="/static/js/labresult.js"></script>
+{% endblock %}
+{% block head_tail %}
+{% endblock %}
+{% block page_body %}
+<nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="sr-only">Menu Général</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <!-- Logo -->
+      {% block brand %}
+      <a href="http://labresult.fr" class="navbar-brand"><img class="logo" src="/static/Logo_LabResult.png"></a>
+      {% endblock %}
+    </div>
+    <div class="collapse navbar-collapse">
+      {% block pre_menu_links %}
+      <ul class="nav navbar-nav navbar-right" id="menugeneral">
+        {{ layout.pre_menu_links() }}
+      {% endblock %}
+      {% block main_menu %}
+        {{ layout.menu() }}
+      {% endblock %}
+      {% block menu_links %}
+        {{ layout.menu_links() }}
+      </ul>
+      {% endblock %}
+      {% block access_control %}
+      {% endblock %}
+    </div>
+  </div>
+</nav>
+
+<!-- Menu en Haut -->
+<div class="slidepanel navbar-static-top">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-xs-6">
+                <div class="spara">
+                    <p>
+		     {% if admin_view.category %}
+                     {{admin_view.category|render_ariane_user|striptags}} <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                     {% endif %}
+		     {% if admin_view.name%}
+                     {{ admin_view.name |striptags }}
+                     {% else %}
+                     {{ gettext("Erreur") }}
+                     {% endif %}
+                     <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-6 col-xs-6 nomuser">
+            </div>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+</div>
+<div class="container margHB10">
+  {% block messages %}{{ layout.messages() }}{% endblock %}
+
+  {% set render_ctx = h.resolve_ctx() %}
+
+  {% block body %}{% endblock %}
+</div>
+{% block footer %}{{ layout.footer() }}{% endblock %}
+{% endblock %}
+

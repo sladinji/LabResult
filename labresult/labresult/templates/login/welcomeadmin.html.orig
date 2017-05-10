@@ -1,0 +1,116 @@
+
+{% extends 'admin/master.html' %}
+{% block body %}
+<div class="panel panel-default margB10">
+  <div class="panel-heading txt20">
+	  <span class="glyphicon glyphicon-user" aria-hidden="true"></span> Bienvenue <span class="tbleuLR">{{current_user.name if current_user.name else current_user.login}}</span>
+  </div>
+</div>
+{% if current_user.role == None %}
+<div class="row">
+
+	<div class="col-md-3 col-sm-3">
+	  <div class="txt20 txtjusti txtgrisf">
+		  Vous êtes connecté en tant que <span class="txtgras txtitalic">super administrateur</span>. Vous avez accès à toutes les fonctionnalités, sans restriction. Voici un descriptif des différentes actions auxquelles vous pouvez accéder grâce au menu ci-dessus :
+	  </div>
+	  <div class="txtcenter txtgrisf">
+	    <span class="flaticon-speedometer26 nomargin txt120"></span>
+	    <span class="flaticon-graph8 nomargin txt120"></span>
+	  </div>
+	</div>
+	<div class="col-md-9 col-sm-9">
+	    <span class="service-icon txt60 hidden-xs glyphicon flaticon-drawer4"></span>
+	  <div class="service-home">
+	    <div class="service-home-meta">Documents</div>
+	    <h4>Visionnez, imprimez, diffusez tous vos documents...</h4>
+	    <p>LabResult vous permet de <span class="txtgras">visualiser tous vos documents au sein de 100% des navigateurs</span>, sans nécessité l'utilisation d'un logiciel tiers.</p>
+	  </div>
+	  <hr>
+	  <div class="service-icon">
+	    <span class="blightblue txt60 hidden-xs glyphicon flaticon-personal19"></span>
+	  </div>
+	  <div class="service-home">
+	    <div class="service-home-meta">Utilisateurs</div>
+	    <h4>Gérez les droits d'accès, créez des groupes utilisateurs...</h4>
+		<ul>
+			<li> Visionner les utilisateurs (patient, médecins, groupe de médecins, personnel du laboratoire...)</li>
+			<li> Activer ou désactiver les comptes utilisateurs </li>
+			<li> Ajouter des utlisateurs, des groupes d'utilisateurs  </li>
+			<li> Créer des rôles pour le personnel du laboratoire et définir les fonctionnalités auxquelles ils ont accès  </li>
+		</ul>
+	  </div>
+	  <hr>
+	  <div class="service-icon">
+	    <span class="blightblue txt60 hidden-xs glyphicon flaticon-two185"></span>
+	  </div>
+	  <div class="service-home">
+	    <div class="service-home-meta">Paramètres</div>
+	    <h4>Réglez tous les paramètres de l'application</h4>
+	    <ul>
+		    <li> Éditer le propriété du laboratoire (nom, adresse, associer des imprimantes) </li>
+		    <li> Définir les entêtes de vos comptes rendus pour avoir le même rendu que la version papier </li>
+		    <li> Ajouter des imprimantes </li>
+		    <li> Modifier les options de l'application </li>
+		    <li> Définir les règles de diffusion des documents (blocage des comptes rendus contenant une analyse critique...) </li>
+		    <li> Changer vos paramètres de connexion </li>
+		    <li> Visionner les journaux d'accès à l'application </li>
+	    </ul>
+	  </div>
+	</div>
+		  {% elif current_user.role.__str__() == 'biologiste' %}
+		  Vous êtes connecté en tant que biologiste. Les fonctionnalités auxquelles vous avez accès dans cette version de démonstration sont les suivantes :
+		  <br>
+		  <br>
+		  <ul>
+			  <li> <p class="tbleuLR txt20"><span class="hidden-sm hidden-xs glyphicon flaticon-drawer4"></span> Documents :</p>
+			    <ul>
+				  <li> Visionner les documents </li>
+				  <li> Gérer les accès (ajouter, supprimer un accès à un médecin, un groupe de médecins...) </li>
+				  <li> Imprimer un document </li>
+				  <li> Récupérer les documents au format PDF, PNG... </li>
+			    </ul>
+			  </li>
+			  <br>
+			  <li><p class="tbleuLR txt20"><span class="hidden-sm hidden-xs glyphicon flaticon-user58"></span> Utilisateurs :</p>
+			    <ul>
+				    <li> Visionner les Utilisateurs </li>
+				    <li> Activer ou désactiver un compte </li>
+				    <li> Ajouter un utilisateur, ou un groupe d'utilisateur </li>
+			    </ul>
+			  </li>
+			  <br>
+			  <li><p class="tbleuLR txt20"><span class="hidden-sm hidden-xs glyphicon flaticon-two185"></span> Paramètres :</p>
+			    <ul>
+				    <li> Éditer le propriété du laboratoire (nom, adresse, associer des imprimantes) </li>
+				    <li> Définir les entêtes de vos comptes rendus pour avoir le même rendu que la version papier </li>
+				    <li> Ajouter des imprimantes </li>
+				    <li> Modifier les options de l'application </li>
+				    <li> Définir les règles de diffusion des documents (blocage des comptes rendus contenant une analyse critique...) </li>
+				    <li> Changer vos paramètres de connexion </li>
+				    <li> Visionner les journaux d'accès à l'application </li>
+			    </ul>
+			  </li>
+
+		   </ul>
+		   {% elif current_user.role.__str__() == 'secrétaire' %}
+		  Vous êtes connecté en tant que secrétaire. Les fonctionnalités auxquelles vous avez accès dans cette version de démonstration sont les suivantes :
+		  <br>
+		  <br>
+		  <ul>
+			  <li><p class="tbleuLR txt20"><span class="hidden-sm hidden-xs glyphicon flaticon-user58"></span> Utilisateurs :</p>
+			    <ul>
+				    <li> Visionner les Utilisateurs </li>
+			    </ul>
+			  </li>
+			  <br>
+			  <li><p class="tbleuLR txt20"><span class="hidden-sm hidden-xs glyphicon flaticon-two185"></span> Paramètres :</p>
+			    <ul>
+				    <li> Changer vos paramètres de connexion </li>
+				    <li> Visionner les journaux d'accès à l'application </li>
+			    </ul>
+		   </ul>
+		   {% else %}
+		   Vous êtes connecté en tant que {{ current_user.role }}.
+		   {% endif %}
+</div> <!--end div row--!>
+{% endblock %}

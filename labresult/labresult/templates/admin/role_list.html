@@ -1,0 +1,22 @@
+{% extends 'admin/model/list_custo.html' %}
+
+{% block body %}
+<div class="panel panel-default margB10">
+  <div class="panel-heading txt20">
+      <i class="flaticon-edit1"></i> <span class="tbleuLR">Éditer les rôles utilisateurs</span>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12 col-sm-12">
+    <h4 class="TTbleu txtmajus"><span class="flaticon-info28 nomargin txt30"></span> A quoi servent les rôles utilisateurs ?</h4>
+  </div>
+  <div class="col-md-6 col-sm-6">
+      <p class="txtjusti">Les rôles utilisateurs vous permettent de <span class="txtgras">définir différents types d'utilisateurs</span> pour vos différents collaborateurs au laboratoire. Pour chaque rôle, vous pouvez définir quelle partie de l'application est consultable et modifiable. Vous pouvez ensuite <span class="txtgras">attribuer un rôle à un utilisateur</span>. Vous avez ensuite la possibilité d'ajouter ou de supprimer des droits au niveau de chaque utilisateur afin d'<span class="txtgras">ajuster au mieux les droits de chaque personne</span>.</p>
+  </div>
+  <div class="col-md-6 col-sm-6 txtcenter txtgrisf">
+    <span class="flaticon-edit1 nomargin txt60"></span>
+  </div>
+</div>
+{{ super()  }}
+  <!-- Content ends -->
+{% endblock %}

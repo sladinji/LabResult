@@ -1,0 +1,5 @@
+recursive-include labresult/templates *
+recursive-include labresult/static *
+recursive-include labresult/lib/pcltemplates *
+recursive-include labresult/lib/underlay *
+recursive-include labresult/lib/demo/data *

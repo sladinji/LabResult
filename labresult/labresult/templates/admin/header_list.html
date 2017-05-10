@@ -1,0 +1,22 @@
+{% extends 'admin/model/list_custo.html' %}
+
+{% block body %}
+<div class="panel panel-default margB10">
+  <div class="panel-heading txt20">
+      <i class="flaticon-text20"></i> <span class="tbleuLR">Paramétrer les entêtes de documents</span>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12 col-sm-12">
+    <h4 class="TTbleu txtmajus"><span class="flaticon-info28 nomargin txt30"></span> A quoi servent les entêtes ?</h4>
+  </div>
+  <div class="col-md-6 col-sm-6">
+      <p class="txtjusti">Si vous utilisez un papier entête pour vos impressions papier, vous pouvez fournir une version numérique de l'entête afin que les documents numériques aient le <span class="txtgras">même rendu que la version papier</span>. Veillez à fournir une entête identique à l'originale.</p> 
+  </div>
+  <div class="col-md-6 col-sm-6 txtcenter txtgrisf">
+    <span class="flaticon-header1 nomargin txt60"></span>
+  </div>
+</div>
+{{ super()  }}
+  <!-- Content ends -->
+{% endblock %}

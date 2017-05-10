@@ -1,0 +1,74 @@
+
+{% extends 'admin/master.html' %}
+{% block body %}
+<div class="panel panel-default margB10">
+  <div class="panel-heading txt20">
+	  <span class="glyphicon glyphicon-user" aria-hidden="true"></span> Bienvenue <span class="tbleuLR">{{current_user.name if current_user.name else current_user.login}}</span>
+  </div>
+</div>
+<div class="row">
+
+	<div class="col-md-3 col-sm-3">
+{% if current_user.role == None %}
+	  <div class="txt20 txtjusti txtgrisf">
+		  Vous êtes connecté en tant que <span class="txtgras txtitalic">super administrateur</span>. Vous avez accès à toutes les fonctionnalités, sans restriction. Voici un descriptif des différentes actions auxquelles vous pouvez accéder grâce au menu ci-dessus :
+	  </div>
+{% elif current_user.role.__str__() == 'biologiste' %}
+	  <div class="txt20 txtjusti txtgrisf">
+		  Vous êtes connecté en tant que <span class="txtgras txtitalic">biologiste</span>. Les fonctionnalités auxquelles vous avez accès dans cette version de démonstration sont les suivantes :
+	  </div>
+{% elif current_user.role.__str__() == 'secrétaire' %}
+	  <div class="txt20 txtjusti txtgrisf">
+		  Vous êtes connecté en tant que <span class="txtgras txtitalic">secrétaire</span>, avec un accès limité à l'application. Les fonctionnalités auxquelles vous avez accès dans cette version de démonstration sont les suivantes :
+	  </div>
+{% endif %}
+	  <div class="txtcenter txtgrisf">
+	    <span class="flaticon-tablet64 nomargin txt120"></span>
+	    <span class="flaticon-speedometer26 nomargin txt120"></span>
+	  </div>
+	</div>
+	<div class="col-md-9 col-sm-9">
+	  <span class="service-icon flaticon-drawer4"></span>
+	  <div class="service-home">
+	    <div class="service-home-meta">Visionnez, imprimez, diffusez tous vos documents...</div>
+	    <h4>Documents</h4>
+	  <ul>
+	        <li> Visionner les documents </li>
+	        <li> Gérer les accès (ajouter, supprimer un accès à un médecin, un groupe de médecins...) </li>
+	        <li> Imprimer un document </li>
+	        <li> Récupérer le document au format PDF, PNG... </li>
+	  </ul>
+	    <p>LabResult vous permet de <span class="txtgras">visualiser tous vos documents dans 100% des navigateurs</span>, sans l'utilisation d'un logiciel tiers.</p>
+	  </div>
+	  <hr>
+	  <span class="service-icon glyphicon flaticon-personal19"></span>
+	  <div class="service-home">
+		  <div class="service-home-meta">Définissez précisément les autorisations de chaque utilisateur, créez des groupes...</div>
+		  <h4>Utilisateurs</h4>
+		<ul>
+			<li> Visionnez les utilisateurs (patient, médecins, groupe de médecins, personnel du laboratoire...)</li>
+			<li> Activez ou désactivez les comptes utilisateurs </li>
+			<li> Ajoutez des utlisateurs, des groupes d'utilisateurs  </li>
+			<li> Créez des rôles pour le personnel du laboratoire et définissez les fonctionnalités auxquelles ils ont accès  </li>
+		</ul>
+	  <p>Pour chaque utlisateur faisant partie du laboratoire, <span class="txtgras">vous pouvez définir précisément quelles parties de l'application sont accessibles et si l'utilisateur peut effectuer des modifications</span>.</p>
+	  </div>
+	  <hr>
+	  <span class="service-icon glyphicon flaticon-two185"></span>
+	  <div class="service-home">
+	    <div class="service-home-meta">Réglez toutes les options du serveur</div>
+	    <h4>Paramètres</h4>
+	    <ul>
+		    <li> Éditez les propriétés du laboratoire (nom, adresse, associer des imprimantes) </li>
+		    <li> Définissez les entêtes de vos comptes rendus pour avoir le même rendu que la version papier </li>
+		    <li> Ajoutez des imprimantes </li>
+		    <li> Modifiez les options de l'application </li>
+		    <li> Définissez les règles de diffusion des documents (blocage des comptes rendus contenant une analyse critique...) </li>
+		    <li> Changez vos paramètres de connexion </li>
+		    <li> Visionnez les journaux d'accès à l'application </li>
+	    </ul>
+	  <p>Les changements de paramètres sont instantanément pris en compte par le serveur</p>
+	  </div>
+	</div>
+</div> <!--end div row--!>
+{% endblock %}

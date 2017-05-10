@@ -1,0 +1,19 @@
+{% extends 'admin/doc_list.html' %}
+
+{% block body %}
+<div class="panel panel-default margB10">
+  <div class="panel-heading txt20">
+      <i class="flaticon-drawer4"></i> <span class="tbleuLR">Voir mes documents</span>
+  </div>
+</div>
+{{ super()  }}
+<div class="alert alert-success" role="alert">
+   <h4><span class="flaticon-info28" aria-hidden="true"></span> Conservation de vos résultats</h4>
+   <p class="txtjusti">Cher patient, afin de vous laisser un maximum de
+   contrôle sur vos données, vous avez la possibilité de supprimer vos résultats du
+   serveur. Les résultats n'étant plus disponibles après leurs suppressions,
+   nous vous conseillons de les télécharger  avant de procéder à leurs
+   suppressions.</p>
+</div>
+  <!-- Content ends -->
+{% endblock %}

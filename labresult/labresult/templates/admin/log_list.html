@@ -1,0 +1,22 @@
+{% extends 'admin/model/list_custo.html' %}
+
+{% block body %}
+<div class="panel panel-default margB10">
+  <div class="panel-heading txt20">
+      <i class="flaticon-purchase1"></i> <span class="tbleuLR">Consulter les journaux d'activité</span>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12 col-sm-12">
+    <h4 class="TTbleu txtmajus"><span class="flaticon-info28 nomargin txt30"></span> Quelles actions sont enregistrées ?</h4>
+  </div>
+  <div class="col-md-6 col-sm-6">
+      <p class="txtjusti"> Absolument <span class="txtgras">toutes les actions effectuées sur le serveur sont enregistrées</span>. Il est ainsi possible de retracer n'importe quelle action effectuée sur le serveur. En plus de ces traces consultables depuis le site, <span class="txtgras">une copie garantie immodifiable est sauvegardée sur un serveur tiers</span>.
+  </div>
+  <div class="col-md-6 col-sm-6 txtcenter txtgrisf">
+    <span class="flaticon-purchase1 nomargin txt60"></span>
+  </div>
+</div>
+{{ super()  }}
+  <!-- Content ends -->
+{% endblock %}

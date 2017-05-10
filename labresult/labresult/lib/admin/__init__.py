@@ -1,0 +1,172 @@
+import logging
+import re
+
+from flask import request
+from flask.ext import login
+from flask.ext.admin.base import MenuLink
+from flask.ext.login import current_user
+from jinja2 import Markup
+from flask.ext.babelex import gettext
+
+from labresult.lib.model import get_option
+from labresult.lib.logging import SMTPHandler_unicode
+
+
+class MenuLinkWithIcon(MenuLink):
+        def __init__(self, name, url=None, endpoint=None, category=None,
+                icon=None):
+            self.icon = icon
+            super().__init__(name, url, endpoint, category)
+
+# This is used to display login our logout button
+class AuthenticatedMenuLink(MenuLinkWithIcon):
+    def is_accessible(self):
+        return current_user.is_authenticated
+
+
+class NotAuthenticatedMenuLink(MenuLinkWithIcon):
+    def is_accessible(self):
+        return not current_user.is_authenticated
+
+def render_user_button_css_class(item):
+    """Jinja filter to update username in button"""
+    if "UserName" in item.name:
+        return " btnuser"
+    elif not current_user.is_authenticated:
+        return ""
+
+def render_ariane_user(markup):
+    """Display name when category is UserName"""
+    if "UserName" in markup and current_user.is_authenticated :
+        return current_user.name if current_user.name else current_user.login
+    else :
+        return markup
+
+def render_user_button(item):
+    """Jinja filter to update username in button"""
+    if not "UserName" in item.name:
+        return item.name
+    elif not current_user.is_authenticated:
+        return ""
+
+    name = current_user.name
+    if not name :
+        name = current_user.login
+    else :
+        prefixes = ["^mr ", "^mme ", "^mlle ", "^dr "]
+        for p in prefixes :
+            name = re.sub(p,'', name, flags=re.I)
+    return Markup(
+        '<span class="hidden-sm hidden-xs flaticon flaticon-user58"></span><span class="txtgras"> {}</span>'.\
+                format(name)
+        )
+
+
+def get_menu_html(label, icon, is_submenu=False):
+    if is_submenu :
+        menu = Markup('<span class="itemic flaticon-{}"></span> {}'.format(icon,
+        label))
+    else:
+        menu = Markup('<span class="hidden-sm hidden-xs flaticon flaticon-{}"></span> {}'.format(icon,
+        label))
+    return menu
+
+def create_aview(model_name, menu_name, icon, viewname = None, **kwargs):
+    """
+    Factory returning a view ready to add to flaskadmin
+    :param model_name: str, model class name
+    :param menu_name: str, name displayed in menu list
+    :param icon_name: str, flaticon name
+    :param viewname: str, base on model view if None
+    :param kwargs: passed to view constructor
+    """
+    try:
+        from labresult import model
+        from labresult.views import admin
+        menu = get_menu_html(menu_name, icon, 'category' in kwargs)
+        viewname = model_name + 'View' if not viewname else viewname
+        view = getattr(admin, viewname)
+        dbobj = getattr(model, model_name)
+        return view(dbobj, menu, **kwargs)
+    except Exception as ex:
+        print(ex)
+        return None
+
+class ContextualFilter(logging.Filter):
+    """
+    Logging variable initialization
+    """
+    def filter(self, log_record):
+        try :
+            log_record.url = request.path
+            log_record.method = request.method
+            log_record.ip = request.environ.get("REMOTE_ADDR")
+            log_record.user_id = login.current_user.id if \
+                login.current_user.is_authenticated else -1
+            log_record.user_name = login.current_user.name if \
+                login.current_user.is_authenticated else "Anonymous"
+            args = "{ "
+            for k,v in request.args.lists() :
+                args += "%s = %s, " % (k, v)
+            args += "}"
+            log_record.reqargs = args
+
+        except RuntimeError :
+            #out of request context
+            log_record.url = "OUT OF CONTEXT"
+            log_record.method = ""
+            log_record.ip = ""
+            log_record.user_id = ""
+            log_record.user_name = ""
+            log_record.reqargs = ""
+        return True
+
+def configure_logging(app):
+    context_provider = ContextualFilter()
+    app.logger.setLevel(app.config['LOG_LEVEL'])
+    app.logger.addFilter(context_provider)
+    del app.logger.handlers[:]
+    handler = logging.StreamHandler()
+    log_format =  "%(asctime)s %(ip)s %(levelname)s %(user_name)s(%(user_id)s) %(method)s %(url)s %(reqargs)s %(message)s"
+    formatter = logging.Formatter(log_format)
+    handler.setFormatter(formatter)
+    app.logger.addHandler(handler)
+    #smtp option
+    smtp_login = get_option('smtp_login', 'demo-labresult@labresult.fr',
+            visible=False)
+    smtp_password = get_option('smtp_password','pacman9732', visible=False)
+    smtp_port = get_option('smtp_port', 587)
+    smtp_server = get_option('smtp_server', 'mail.gandi.net',
+            gettext("Serveur SMTP"), visible=False)
+    smtp_error_sender = get_option('smtp_error_sender', 'server-error@labresult.com',
+            gettext("Email envoyeur pour les erreurs."))
+    smtp_error_recipients = get_option("smtp_error_recipients",
+    "['support@labresult.fr']",
+            gettext("Emails destinataires pour l'envoi des erreurs du"
+            " serveur"))
+    if not app.debug:
+        logging.getLogger('werkzeug').setLevel(logging.ERROR)
+        # Use a multi-line format for this logger, for easier scanning
+        mail_formatter = logging.Formatter("""
+Time: %(asctime)s
+IP: %(ip)s
+User: %(user_name)s (%(user_id)s)
+Level: %(levelname)s
+Method: %(method)s
+Path: %(url)s
+Args: %(reqargs)s
+Message: %(message)s
+---------------------""")
+
+        mail_handler = SMTPHandler_unicode((smtp_server, smtp_port),
+                                   smtp_error_sender,
+                                   smtp_error_recipients,
+                                   gettext('Anomalie serveur LabResult'),
+                                   (smtp_login, smtp_password),
+                                   secure=(),
+                                   )
+        mail_handler.setLevel(logging.ERROR)
+        mail_handler.setFormatter(mail_formatter)
+        app.logger.addHandler(mail_handler)
+
+

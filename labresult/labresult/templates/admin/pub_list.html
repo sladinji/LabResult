@@ -1,0 +1,23 @@
+{% extends 'admin/model/list_custo.html' %}
+
+{% block body %}
+<div class="panel panel-default margB10">
+  <div class="panel-heading txt20">
+      <i class="flaticon-programming"></i> <span class="tbleuLR">Définir les règles d'accès aux documents</span>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12 col-sm-12">
+    <h4 class="TTbleu txtmajus"><span class="flaticon-info28 nomargin txt30"></span> Qu'est ce qu'une règle de diffusion ?</h4>
+  </div>
+  <div class="col-md-6 col-sm-6">
+      <p class="txtjusti">Pour chaque document, <span class="txtgras">des droits d'accès sont attribués aux différentes personnes associées aux documents</span> (patients, médecins...). Une règle de diffusion permet de définir <span class="txtgras">en fonction des propriétés d'un document</span> les droits d'accès à ce document. Par exemple, l'accès à un compte rendu est refusé au patient s'il est <span class="txtgras">mineur</span> ou si le document contient une <span class="txtgras">analyse sensible</span>.</p> 
+  </div>
+  <div class="col-md-6 col-sm-6 txtcenter txtgrisf">
+    <span class="flaticon-text32 nomargin txt60"></span>
+    <span class="flaticon-users216 nomargin txt60"></span>
+  </div>
+</div>
+{{ super()  }}
+  <!-- Content ends -->
+{% endblock %}

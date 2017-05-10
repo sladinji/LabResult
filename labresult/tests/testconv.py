@@ -1,0 +1,29 @@
+
+import os
+import testlib
+from labresult.converter import pcl
+from labresult.converter import pdf
+from labresult.converter import merge_pdfs
+
+class TestConv(testlib.TestBase):
+
+    def testPclConv(self):
+        data = pcl.topdf(self.get_data('progi.pcl'))
+        self.assertTrue(abs(len(data) - 305753) <  10)
+
+    def testPngConv(self):
+        #initialize logger
+        pdf_data = self.get_data('2pages.pdf')
+        png_data = pdf.toimg(pdf_data)
+        self.assertEquals(65664, len(png_data))
+        png_data = pdf.toimg(pdf_data, page_num=2)
+        self.assertEquals(10532, len(png_data))
+
+
+    def testPdfMerge(self):
+        pdfdata = self.get_data('3pages.pdf')
+        bg = self.get_data('underlay.pdf')
+        merge = merge_pdfs(pdfdata, 3, bg, verso=bg)
+        out = open(os.path.join(self.test_folder, 'output.pdf'), 'wb')
+        out.write(merge)
+        out.close()

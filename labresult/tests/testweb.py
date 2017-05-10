@@ -1,0 +1,810 @@
+import io
+import json
+import warnings
+from io import BytesIO
+from zipfile import ZipFile
+import urllib.parse
+from datetime import timedelta
+
+from flask import url_for
+
+import labresult
+import testlib
+from labresult import converter
+from labresult.model import *
+from labresult.lib.conf import do_post_config
+
+
+class TestWeb(testlib.TestBase):
+
+    private_links = []
+
+    def test_app_creation(self):
+        """
+        Test all app configuration
+        """
+        for conf in labresult.conf_short :
+            app, _ = labresult.create_app(conf)
+            do_post_config(app)
+
+    @property
+    def private_urls(self):
+        if self.private_links :
+            return self.private_links
+        public_views = [ "admin", "index", "static_from_root"]
+        with labresult.app.test_request_context():
+            for rule in labresult.app.url_map.iter_rules():
+                public_rule = [ url for url in public_views if url in rule.endpoint]
+                if public_rule :
+                    continue
+                # Filter out rules we can't navigate to in a browser
+                # and public views
+                if "GET" in rule.methods:
+                    try :
+                        url = url_for(rule.endpoint)
+                        self.private_links.append((url, rule.endpoint))
+                    except :
+                        # exception occures when parameters are required (like
+                        # id) to generate URL
+                        warnings.warn("fails url_for with %s" % rule.endpoint)
+        return self.private_links
+
+    def test_access_rights(self):
+        """
+        Test that all view are not accessible anonymously, except the public
+        ones.
+        """
+        self.logout()
+        for url, endpoint in self.private_urls:
+            rv = self.client.get(url)
+            self.assertTrue( rv._status_code in [403, 401, 307] )
+        import sys
+        from labresult.lib import scripts
+        sys.argv = ['script', 'test']
+        scripts.set_demo_options(1)
+        self.add_a_user_and_a_doc()
+        self.login("dowst", "dowst")
+        for url, endpoint in self.private_urls:
+            rv = self.client.get(url)
+            self.assertTrue( rv._status_code != 500 )
+
+    def login(self, username, password):
+        return self.client.post('/lab/', data=dict(
+            login=username,
+            password=password
+        ), follow_redirects=True)
+
+    def logout(self):
+        return self.client.get('/lab/logout', follow_redirects=True)
+
+    def test_login_logout(self):
+        # test login template load
+        self.client.get('/lab/')
+        self.add_a_user_and_a_doc()
+        rv = self.login('dowst','dowst')
+        self.assertEquals(rv._status_code, 200)
+        rv = self.logout()
+        self.assertEquals(rv._status_code, 200)
+        rv = self.client.get("/healthworker/")
+        self.assertEquals(rv._status_code, 307)
+
+    def test_credential(self):
+        from labresult.lib.admin import configure_logging
+        configure_logging(labresult.app)
+        #dont know why but smtp option needs to be reinitialized for this test
+        from labresult.lib.sms import SmsBase
+        class FakeSmsPlugin(SmsBase):
+            def _send_sms(self, user, message):
+                return True
+
+        labresult.app.sms_plugins = [FakeSmsPlugin()]
+        self.add_a_user_and_a_doc()
+        rv = self.client.post('/lab/credential', data=dict(
+            channel='0782423212',
+        ), follow_redirects=False)
+        self.assertEquals(rv.status_code, 302)
+        self.assertEquals(rv.headers['Location'], 'http://localhost/credential/')
+        rv = self.client.post('/lab/credential', data=dict(
+            channel='dowst@yopmail.com',
+        ), follow_redirects=False)
+        self.assertEquals(rv.status_code, 302)
+        self.assertEquals(rv.headers['Location'], 'http://localhost/credential/')
+        code = User.objects(login='dowst').get().credential_code
+        rv = self.client.post('/credential/', data=dict(
+            code='mauvaiscode',
+        ), follow_redirects=False)
+        #stay on same page with error message so status code is 200
+        rv = self.client.post('/credential/', data=dict(
+            code='bad@email.fr',
+        ), follow_redirects=False)
+        #stay on same page with error message so status code is 200
+        self.assertEquals(rv.status_code, 200)
+        rv = self.client.post('/credential/', data=dict(
+            code=code,
+        ), follow_redirects=False)
+        #redirection to account page so status code is 302
+        self.assertEquals(rv.headers['Location'], 'http://localhost/account/')
+        self.assertEquals(rv.status_code, 302)
+
+        #test credential_code ttl
+        user = User.objects(email = 'dowst@yopmail.com').get()
+        user.credential_code_date -= timedelta(minutes=30)
+        user.save()
+        rv = self.client.post('/credential/', data=dict(
+            code=code,
+        ), follow_redirects=False)
+        self.assertEquals(rv.headers['Location'], 'http://localhost/')
+        #redirection to index page so status code is 302
+        self.assertEquals(rv.status_code, 302)
+
+    def add_a_doc(self):
+        data = self.get_data("progi.pcl")
+        pdfdata = self.get_data("2pages.pdf")
+        # post pcl anonymously
+        self.client.post("/api/v1.0/pcl",
+                buffered=True,
+                content_type='multipart/form-data',
+                data=dict(data=(io.BytesIO(data), 'filename.pcl'),
+                          pdf=(io.BytesIO(pdfdata), 'filename.pdf'),
+                          parser_name='pclparser',
+                          pdf_nb_pages='2',
+                          )
+             )
+
+
+    def add_a_user(self):
+        # create user
+        dowst = Administrator(login="dowst", pass2hash= "dowst",
+                account_activated=True, email="dowst@yopmail.com",
+                mobile="0782423212")
+        dowst.save()
+
+    def add_a_user_and_a_doc(self):
+        self.add_a_user()
+        self.add_a_doc()
+
+    def test_add_pcl(self):
+        self.add_a_user_and_a_doc()
+        self.assertEquals(1, Document.objects.count())
+        self.assertEquals(4, User.objects.count())
+        doc = Document.objects[0]
+        with labresult.app.test_request_context():
+            pdf_link = url_for("file", id=doc.id,
+                    format="pdf", as_attachment=True)
+            reset_link = url_for("document.reset_doc",
+                id=doc.id)
+            raw_link = url_for("file", id=doc.id,
+                    format="raw", as_attachment=True)
+            edit_link = url_for("document.edit_view",
+                id=doc.id)
+        rv = self.client.get(pdf_link)
+        self.assertEquals(rv._status_code, 401)
+        # log in
+        rv = self.login('dowst','dowst')
+        rv = self.client.get(pdf_link)
+        self.assertEquals(36172, len(rv.data))
+        # load document admin view to test decorator
+        rv = self.client.get("/document/")
+        # test reset doc
+        rv = self.client.get(reset_link)
+        self.assertEquals('302 FOUND', rv.status)
+        #test raw download
+        rv = self.client.get(raw_link)
+        self.assertEquals(16301, len(rv.data))
+        #test bad link
+        rv = self.client.get(raw_link.replace("raw","pew"))
+        self.assertEquals('404 NOT FOUND', rv.status)
+        #test error decorator
+        doc.data = None
+        doc.save()
+        self.client.get(reset_link)
+        rv = self.client.get("/document/")
+        self.assertTrue("Problème avec le document" in rv.data.decode("utf-8"))
+        #test document edit
+        new_med = HealthWorker(name="delapouite")
+        new_med.save()
+        self.assertEquals(doc.healthworkers_name, "DR J MARIE WILHELM MAZURE"
+                " Sophie")
+        rv = self.client.post(edit_link,
+                data={
+                    'healthworkers':[str(new_med.id)],
+                    'labo':'__None'
+                    }
+                )
+        self.assertEquals('302 FOUND', rv.status)
+        doc.reload()
+        import warnings
+        #TODO
+        warnings.warn("Test document edit via view disaled,bug in flask admin")
+        #self.assertEquals(doc.healthworkers_name, "delapouite")
+
+
+    def test_get_img(self):
+        self.add_a_user_and_a_doc()
+        # log in
+        rv = self.login('dowst','dowst')
+        doc = Document.objects[0]
+        with labresult.app.test_request_context():
+            png_link = url_for("file", gridfs_id=doc.data.grid_id,
+                    format="png", thumbnail=True)
+        rv = self.client.get(png_link)
+        self.assertEquals(6612, len(rv.data))
+
+    def test_tasks(self):
+        self.add_a_user_and_a_doc()
+        doc = Document.objects[0]
+        pdf_data = converter.get_pdf(doc)
+        self.assertEquals(36172, len(pdf_data))
+        self.assertEquals(2, doc.pdf_nb_pages)
+        png_data = converter.get_img(doc, 2, True, "png")
+        self.assertEquals(2968, len(png_data))
+
+    def test_printer_api(self):
+        self.add_a_user_and_a_doc()
+        p1 = Printer(name='p1')
+        p1.options =[PrinterOption(document_type="rien",
+            options=dict(tiens='voiladuboudin'))]
+        p1.save()
+        with labresult.app.test_request_context():
+            printer_link = url_for("printer", id=p1.id)
+            #TODO find why putting a boolean in url is always parsed as True in
+            # the server side
+            put_link = url_for("printer", id=p1.id,
+                    #activated=False,
+                    cups_port="2000", cups_host='googleprint')
+        rv = self.client.get(printer_link)
+        self.assertEquals('401 UNAUTHORIZED', rv.status)
+        self.login("dowst","dowst")
+        rv = self.client.get(printer_link)
+        self.assertEquals('200 OK', rv.status)
+        dic = json.loads(rv.data.decode("utf8"))
+        self.assertEquals([{"options": {"tiens": "voiladuboudin"},
+            "document_type": "rien"}],
+            dic['options']
+            )
+        rv = self.client.put(put_link)
+        self.assertEquals('200 OK', rv.status)
+        p1.reload()
+        self.assertEquals(2000, p1.cups_port)
+        self.assertEquals(False, p1.activated)
+
+    def test_labo_api(self):
+        self.add_a_user_and_a_doc()
+        lab1 = Labo(name='lab1')
+        p1 = Printer(name='p1')
+        p1.save()
+        p2 = Printer(name='p2')
+        p2.save()
+        lab1.printers.append(p1)
+        lab1.printers.append(p2)
+        lab1.save()
+        with labresult.app.test_request_context():
+            lab_link = url_for("labo", id=lab1.id)
+            labs_link = url_for("labos")
+            lab_put = url_for("labo", id=lab1.id, name='newname')
+        rv = self.client.get(labs_link)
+        self.assertEquals('401 UNAUTHORIZED', rv.status)
+        rv = self.client.get(lab_link)
+        self.assertEquals('401 UNAUTHORIZED', rv.status)
+        self.login("dowst","dowst")
+        rv = self.client.get(lab_link)
+        self.assertEquals('200 OK', rv.status)
+        dic = json.loads(rv.data.decode("utf8"))
+        self.assertEquals(2, len(dic['printers']))
+        rv = self.client.get(labs_link)
+        self.assertEquals('200 OK', rv.status)
+        dic = json.loads(rv.data.decode("utf8"))
+        self.assertEquals(2, len(dic["labos"]))
+        rv = self.client.put(lab_put)
+        self.assertEquals('200 OK', rv.status)
+        dic = json.loads(rv.data.decode("utf8"))
+        self.assertEquals('newname', dic['name'])
+        lab1.reload()
+        self.assertEquals('newname', lab1.name)
+
+    def test_document_api(self):
+        self.add_a_user_and_a_doc()
+        doc = Document.objects[0]
+        for x in range(9):
+            self.add_a_doc()
+        with labresult.app.test_request_context():
+            doc_link = url_for("document", ids=str(doc.id))
+            doc_put = url_for("document", id=doc.id, numdos='XFILE')
+            ids = [ str(doc.id) for doc in Document.objects ]
+            docs_link = url_for("document") +"?"+ urllib.parse.urlencode([('ids',id) for id in ids])
+            idserr = [ str(id) for id in range(30) ]
+            docs_linkerr = url_for("document") +"?"+ urllib.parse.urlencode([('ids',id)
+                for id in idserr])
+            rv = self.client.get(doc_link)
+            self.assertEquals('401 UNAUTHORIZED', rv.status)
+            self.login("dowst","dowst")
+            rv = self.client.get(doc_link)
+            self.assertEquals('200 OK', rv.status)
+            dic = json.loads(rv.data.decode("utf8"))
+            self.assertEquals(dic['success'], True)
+            dic = dic['items'][0]
+            self.assertEquals(dic['doc_type'], 'CR_PATIENT')
+            self.assertEquals(dic['log'], None)
+            self.assertEquals(dic['name'], 'Mr_LOUIS_SCHERRER_CR_PATIENT_4LI0114012')
+            self.assertEquals(dic['numdos'], '4LI0114012')
+            self.assertEquals(dic['patient_name'], 'Mr LOUIS SCHERRER')
+            self.assertEquals(dic['pdf_nb_pages'], 2)
+            self.assertEquals(dic['traceback'], None)
+            rv = self.client.put(doc_put)
+            doc = Document.objects[0]
+            self.assertEquals('XFILE', doc.numdos)
+            rv = self.client.get(docs_link)
+            self.assertEquals('200 OK', rv.status)
+            dic = json.loads(rv.data.decode("utf8"))
+            self.assertEquals(10, len(dic['items']))
+            rv = self.client.get(docs_linkerr)
+            self.assertEquals('401 UNAUTHORIZED', rv.status)
+            #test group access
+            #take current version
+            doc = Document.objects[9]
+            doc_link = url_for("document", ids=str(doc.id))
+            grp = Group(login="group", pass2hash="group",
+                    account_activated=True)
+            grp.save()
+            self.logout()
+            rv = self.login("group","group")
+            self.assertEquals('200 OK', rv.status)
+            rv = self.client.get(doc_link)
+            self.assertEquals('401 UNAUTHORIZED', rv.status)
+            doc.groups.append(GroupAccess(user=grp, read=True))
+            doc.save()
+            rv = self.client.get(doc_link)
+            self.assertEquals('200 OK', rv.status)
+            #test hw access
+            hw = HealthWorker(login="hw", pass2hash="hw",
+                    account_activated=True)
+            hw.save()
+            self.logout()
+            rv = self.login("hw", "hw")
+            self.assertEquals('200 OK', rv.status)
+            rv = self.client.get(doc_link)
+            self.assertEquals('401 UNAUTHORIZED', rv.status)
+            hw.groups.append(GroupMember(user=grp))
+            hw.save()
+            rv = self.client.get(doc_link)
+            self.assertEquals('200 OK', rv.status)
+
+
+    def test_file_api(self):
+        self.add_a_user()
+        for i in range(26):
+            self.add_a_doc()
+        ids = [ str(doc.id) for doc in Document.objects ]
+        with labresult.app.test_request_context():
+            doc_link_too_much  = url_for("file", format='png',
+                    thumbnail=True) +"&"+ urllib.parse.urlencode([('ids',id) for id in
+                        ids])
+            doc_link  = url_for("file", format='png',
+                    thumbnail=True) +"&"+ urllib.parse.urlencode([('ids',id) for id in
+                        ids[:10]])
+        self.login("dowst","dowst")
+        rv = self.client.get(doc_link_too_much)
+        self.assertEquals('401 UNAUTHORIZED', rv.status)
+        self.assertTrue('Multiple file can only be png thumbnail and less than'
+                ' 26 items' in rv.data.decode("utf-8"))
+        rv = self.client.get(doc_link)
+        self.assertEquals('200 OK', rv.status)
+        buf = BytesIO(rv.data)
+        with ZipFile(buf, 'r') as zip:
+            namelist = zip.namelist()
+        self.assertEquals( len(namelist), 10)
+
+    def test_users_forms(self):
+        with labresult.app.test_request_context():
+            pcreate_link = url_for("patient.create_view")
+            hwcreate_link = url_for("healthworker.create_view")
+            admincreate_link = url_for("admingeneric.create_view")
+            grpcreate_link = url_for("group.create_view")
+        #Add StringOption
+        opt = dict( login='admin', password='admin')
+        rv = self.client.post(admincreate_link, data=opt)
+        self.assertEquals('307 TEMPORARY REDIRECT', rv.status)
+        self.add_a_user_and_a_doc()
+        self.login("dowst","dowst")
+        opt = dict( login='admin', password_holder='admin')
+        rv = self.client.post(admincreate_link, data=opt)
+        self.assertEquals('200 OK', rv.status)
+        self.assertTrue('Le mot de passe doit faire plus de 8' in
+        str(rv.data))
+        opt.update(password_holder='adminadmin')
+        rv = self.client.post(admincreate_link, data=opt)
+        self.assertEquals('200 OK', rv.status)
+        self.assertTrue('La confirmation du mot de passe ne'
+            ' correspond pas' in str(rv.data))
+        opt.update(confirm='adminadmin')
+        rv = self.client.post(admincreate_link, data=opt)
+        self.assertEquals('302 FOUND', rv.status)
+        #302 means forms has been validated and we are redirected to admin view
+        opt.update(password_holder='password', confirm='password')
+        rv = self.client.post(hwcreate_link, data=opt)
+        self.assertEquals('200 OK', rv.status)
+        self.assertTrue('Le login existe' in str(rv.data))
+        opt.update(login='healthworker')
+        rv = self.client.post(hwcreate_link, data=opt)
+        self.assertEquals('302 FOUND', rv.status)
+        #302 means forms has been validated and we are redirected to hw view
+
+        rv = self.client.post(pcreate_link, data=opt)
+        self.assertEquals('200 OK', rv.status)
+        self.assertTrue('Le login existe' in str(rv.data))
+        opt.update(login='patient')
+        rv = self.client.post(pcreate_link, data=opt)
+        self.assertEquals('302 FOUND', rv.status)
+        #302 means forms has been validated and we are redirected to patient view
+
+        rv = self.client.post(grpcreate_link, data=opt)
+        self.assertEquals('200 OK', rv.status)
+        self.assertTrue('Le login existe' in str(rv.data))
+        opt.update(login='group')
+        rv = self.client.post(grpcreate_link, data=opt)
+        self.assertEquals('302 FOUND', rv.status)
+
+    def test_option(self):
+        with labresult.app.test_request_context():
+            create_link = url_for("option.create_view")
+            #Add StringOption
+            opt = dict(key="clé", value="valeur", description="desc")
+            rv = self.client.post(create_link, data=opt)
+            self.assertEquals('307 TEMPORARY REDIRECT', rv.status)
+            self.add_a_user_and_a_doc()
+            self.login("dowst","dowst")
+            rv = self.client.post(create_link, data=opt)
+            dbopt = Option.objects.filter(key='clé').first()
+            self.assertTrue(isinstance(dbopt, StringOption))
+            with labresult.app.test_request_context():
+                edit_link = url_for("option.edit_view", id=dbopt.id)
+            #Edit option value
+            opt = dict( value="update", key="clé", description="desc")
+            rv = self.client.post(edit_link, data=opt)
+            self.assertEquals('302 FOUND', rv.status)
+            dbopt = Option.objects.filter(key='clé').first()
+            self.assertEquals("update", dbopt.value)
+            #Edit value changing is type
+            opt = dict( value=123, key="clé", description="desc")
+            rv = self.client.post(edit_link, data=opt)
+            self.assertEquals('200 OK', rv.status)
+            self.assertTrue("La valeur que vous avez saisie est incorrecte pour "
+                "ce type" in rv.data.decode("utf8"))
+            dbopt = Option.objects.filter(key='clé').first()
+            self.assertEquals("update", dbopt.value)
+            #Add IntOption
+            opt = dict(key='key1', value=42, description="desc")
+            rv = self.client.post(create_link, data=opt)
+            dbopt = Option.objects.filter(key='key1').first()
+            self.assertTrue(isinstance(dbopt, IntOption))
+            #Add ListOption
+            opt = dict(key='key2', value="[4,2]", description="desc")
+            rv = self.client.post(create_link, data=opt)
+            dbopt = Option.objects.filter(key='key2').first()
+            self.assertTrue(isinstance(dbopt, ListOption))
+
+    def test_printing(self):
+        self.add_a_user_and_a_doc()
+        doc = Document.objects[0]
+        with labresult.app.test_request_context():
+            action_link = url_for("document.action_view")
+            view_print_link = url_for("document.print_doc", id=doc.id)
+            view_reset_link = url_for("document.reset_doc", id=doc.id)
+            doc_print = url_for("printing", id=doc.id)
+        rv = self.client.get(doc_print)
+        self.assertEquals('401 UNAUTHORIZED', rv.status)
+        self.login("dowst","dowst")
+        rv = self.client.get(doc_print)
+        self.assertEquals('400 BAD REQUEST', rv.status)
+        self.assertTrue("Configurez le labo" in json.loads(rv.data.decode("utf8"))["message"])
+        printer = Printer(name='PDF', activated=True)
+        printer.options.append(PrinterOption(document_type='CR_PATIENT'))
+        printer.save()
+        labo = Labo(name="labtest")
+        labo.printers.append(printer)
+        labo.save()
+        doc.labo = labo
+        doc.save()
+        rv = self.client.get(doc_print)
+        self.assertEquals('200 OK', rv.status)
+        rv = self.client.get(view_print_link)
+        self.assertEquals('302 FOUND', rv.status)
+        rv = self.client.get(view_reset_link)
+        self.assertEquals('302 FOUND', rv.status)
+        rv = self.client.post(action_link, data={"action":"print", "rowid":[doc.id,]})
+        self.assertEquals('302 FOUND', rv.status)
+        rv = self.client.post(action_link, data={"action":"reset", "rowid":[doc.id,]})
+        self.assertEquals('302 FOUND', rv.status)
+        #test print error
+        printer.name = 'bugged name'
+        printer.save()
+        rv = self.client.get(view_print_link)
+        rv = self.client.get("/document/")
+        self.assertTrue("Erreur lors de l&#39;impression du document"  in
+                rv.data.decode('utf8'))
+
+    def test_doc2sign_api(self):
+        with labresult.app.test_request_context():
+            biolo = Biologist(login="biolo", pass2hash="biolo",
+                    account_activated= True)
+            biolo.save()
+            self.add_a_doc()
+            doc = Document.objects.first()
+            doc.biologist = biolo
+            doc.save()
+            for i in range(10):
+                self.add_a_doc()
+            rv = self.login("biolo","biolo")
+            self.assertEquals(rv._status_code, 200)
+            rv = self.client.get(url_for("doc2sign"))
+            self.assertEquals(rv._status_code, 200)
+            dic = json.loads(rv.data.decode("utf8"))
+            self.assertEquals( 1, len(dic['items_ids']))
+            #modify pdf
+            pdf_data = self.get_data("3pages.pdf")
+            rv = self.client.post("/api/v1.0/doc2sign",
+                buffered=True,
+                content_type='multipart/form-data',
+                data=dict(id = str(doc.id),
+                    pdf=(io.BytesIO(pdf_data), 'filename.pdf'),
+                    )
+                )
+            self.assertEquals(rv._status_code, 200)
+            doc = Document.objects.get(id=doc.id)
+            self.assertEquals(pdf_data, doc.pdf.read())
+            self.assertEquals(doc.signed, True)
+
+            #test with unauthorized user
+            self.logout()
+            dowst = Biologist(login="dowst", pass2hash= "dowst", account_activated=True)
+            dowst.save()
+            rv = self.login("dowst","dowst")
+            self.assertEquals(rv._status_code, 200)
+            rv = self.client.post("/api/v1.0/doc2sign",
+                buffered=True,
+                content_type='multipart/form-data',
+                data=dict(id = str(doc.id),
+                    pdf=(io.BytesIO(pdf_data), 'filename.pdf'),
+                    )
+                )
+            self.assertEquals(rv._status_code, 401)
+            dic = json.loads(rv.data.decode("utf8"))
+            self.assertEquals(dic["error"],
+                "Access denied to requested ressource"
+                )
+
+    def test_board_api(self):
+        with labresult.app.test_request_context():
+            # create user
+            dowst = Patient(login="dowst", pass2hash= "dowst", account_activated=True)
+            dowst.save()
+            # add document 1/2 patient.read=True
+            for i in range(10):
+                Document(doc_type="CR", numdos=str(i)*5,
+                        patient=PatientAccess(user=dowst, read=bool(i%2)),
+                        current_version = True,
+                        status = Document.OK).save()
+            rv = self.login("dowst","dowst")
+            self.assertEquals(rv._status_code, 200)
+            rv = self.client.get(url_for("board"))
+            self.assertEquals(rv._status_code, 200)
+            dic = json.loads(rv.data.decode("utf8"))
+            self.assertEquals( 5, len(dic['items_ids']))
+            rv = self.client.get(url_for("board", filter="1"))
+            self.assertEquals(rv._status_code, 200)
+            dic = json.loads(rv.data.decode("utf8"))
+            self.assertEquals(1, len(dic['items_ids']))
+            doc = Document.objects.get(id=dic['items_ids'][0])
+            self.assertEquals("11111", doc.numdos)
+            #test patient_id filter
+            p2 = Patient(login="p2", pass2hash= "p2", account_activated=True)
+            p2.save()
+            m1 = HealthWorker(login="m1", pass2hash= "m1", account_activated=True)
+            m1.save()
+            m2 = HealthWorker(login="m2", pass2hash= "m2", account_activated=True)
+            m2.save()
+            m3 = HealthWorker(login="m3", pass2hash= "m3", account_activated=True)
+            m3.save()
+            grp = Group(name="groupmed")
+            grp = Group(name="groupmed")
+            grp.save()
+            grp2 = Group(name="groupmed2")
+            grp2.save()
+            for i in range(3):
+                doc =Document(doc_type="CR", numdos='p' + str(i)*4,
+                        patient=PatientAccess(user=p2, read=True),
+                        current_version = True,
+                        status = Document.OK,
+                        )
+                doc.healthworkers.append(HealthWorkerAccess(user=m1,
+                    role='prescripteur', read=True))
+                doc.healthworkers.append(HealthWorkerAccess(user=m2,
+                    role='corres', read=False))
+                doc.groups.append(GroupAccess(user=grp, read=True))
+                doc.groups.append(GroupAccess(user=grp2, read=False))
+                doc.save()
+            self.logout()
+            rv = self.login("m1","m1")
+            self.assertEquals(rv._status_code, 200)
+            rv = self.client.get(url_for("board", patient_id=str(p2.id)))
+            self.assertEquals(rv._status_code, 200)
+            dic = json.loads(rv.data.decode("utf8"))
+            self.assertEquals(3, len(dic['items_ids']))
+            #test with m2
+            self.logout()
+            rv = self.login("m2","m2")
+            self.assertEquals(rv._status_code, 200)
+            rv = self.client.get(url_for("board"))
+            self.assertEquals(rv._status_code, 200)
+            dic = json.loads(rv.data.decode("utf8"))
+            self.assertEquals(0, len(dic['items_ids']))
+            #add m2 in group with access and retest acces
+            m2.groups.append(GroupMember(share=True, user = grp))
+            m2.save()
+            self.assertEquals(rv._status_code, 200)
+            rv = self.client.get(url_for("board", patient_id=str(p2.id)))
+            self.assertEquals(rv._status_code, 200)
+            dic = json.loads(rv.data.decode("utf8"))
+            self.assertEquals(3, len(dic['items_ids']))
+            #add m2 in another group with read=False
+            m2.groups.append(GroupMember(share=True, user=grp2))
+            m2.save()
+            self.assertEquals(rv._status_code, 200)
+            rv = self.client.get(url_for("board", patient_id=str(p2.id)))
+            self.assertEquals(rv._status_code, 200)
+            dic = json.loads(rv.data.decode("utf8"))
+            self.assertEquals(3, len(dic['items_ids']))
+            #add m3 in group with read=False
+            self.logout()
+            rv = self.login("m3","m3")
+            self.assertEquals(rv._status_code, 200)
+            m3.groups.append(GroupMember(share=True, user=grp2))
+            m3.save()
+            self.assertEquals(rv._status_code, 200)
+            rv = self.client.get(url_for("board", patient_id=str(p2.id)))
+            self.assertEquals(rv._status_code, 200)
+            dic = json.loads(rv.data.decode("utf8"))
+            self.assertEquals(0, len(dic['items_ids']))
+
+    def test_account_view(self):
+        with labresult.app.test_request_context():
+            account_link = url_for("account.index")
+            rv = self.client.post(account_link, data=dict(
+                login="login",
+                password='passord')
+                )
+            self.assertEquals(307, rv.status_code)
+            self.assertEquals(rv.headers['Location'], 'http://localhost/lab/')
+            self.add_a_user_and_a_doc()
+            self.login("dowst","dowst")
+            rv = self.client.post(account_link, data=dict(
+                login="dowst",
+                password='passordpassword',
+                confirm='passordpassword')
+                )
+            self.assertEquals(302, rv.status_code)
+
+    def test_user_api(self):
+        self.add_a_user_and_a_doc()
+        admin = User.objects[0]
+        with labresult.app.test_request_context():
+            user_link = url_for('userinfo', ids=admin.id)
+            rv = self.client.get(user_link)
+            self.assertEquals('401 UNAUTHORIZED', rv.status)
+            self.login("dowst","dowst")
+            #test admin get his own info
+            rv = self.client.get(user_link)
+            self.assertEquals('200 OK', rv.status)
+            dic = json.loads(rv.data.decode("utf8"))
+            self.assertEquals(dic['success'], True)
+            dic = dic['items'][0]
+            control = {
+                    'birthdate': None,
+                    'address2': None,
+                    'mobile': '0782423212',
+                    'address1': None,
+                    'email': 'dowst@yopmail.com',
+                    'name': None,
+                    'address3': None,
+                    'fixe': None,
+                    'login': 'dowst',
+                    'user_type': 'User.Administrator',
+                    }
+            control.update(id=dic['id'])
+            self.assertEquals(dic, control)
+            #test invalid id
+            invalid_id = url_for('userinfo', ids='nimp')
+            rv = self.client.get(invalid_id)
+            self.assertEquals('401 UNAUTHORIZED', rv.status)
+            dic = json.loads(rv.data.decode("utf8"))
+            self.assertEquals('Invalid ID', dic['error'])
+            #test not exist
+            notexists_id = url_for('userinfo',
+                    ids=str(admin.id).replace('5','1')
+                    )
+            rv = self.client.get(notexists_id)
+            self.assertEquals('401 UNAUTHORIZED', rv.status)
+            dic = json.loads(rv.data.decode("utf8"))
+            self.assertEquals('Ressource not found', dic['error'])
+            #test hw get info on patient
+            doc = Document.objects[0]
+            pat = doc.patient.user
+            hw = doc.healthworkers[0].user
+            hw.set_pass('hw')
+            hw.login='hw'
+            hw.account_activated = True
+            hw.save()
+            self.logout()
+            self.login('hw','hw')
+            user_link = url_for('userinfo', ids=str(pat.id))
+            rv = self.client.get(user_link)
+            self.assertEquals('200 OK', rv.status)
+            dic = json.loads(rv.data.decode("utf8"))
+            self.assertEquals(dic['success'], True)
+            #test med access with no right
+            doc.healthworkers = []
+            doc.save()
+            rv = self.client.get(user_link)
+            self.assertEquals('401 UNAUTHORIZED', rv.status)
+            dic = json.loads(rv.data.decode("utf8"))
+            self.assertEquals('Access denied to requested ressource', dic['error'])
+            #test group access
+            grp = Group(name="groupmed", login="grp", pass2hash="grp",
+                    account_activated=True)
+            grp.save()
+            self.logout()
+            rv = self.login("grp", "grp")
+            self.assertEquals('200 OK', rv.status)
+            rv = self.client.get(user_link)
+            self.assertEquals('401 UNAUTHORIZED', rv.status)
+            doc.groups.append(GroupAccess(user=grp, read=True))
+            doc.save()
+            rv = self.client.get(user_link)
+            self.assertEquals('200 OK', rv.status)
+            # test med access via group
+            hw.groups.append(GroupMember(user=grp))
+            hw.save()
+            doc.save()
+            self.logout()
+            self.login('hw','hw')
+            rv = self.client.get(user_link)
+            self.assertEquals('200 OK', rv.status)
+            dic = json.loads(rv.data.decode("utf8"))
+            self.assertEquals(dic['success'], True)
+
+            #test patient access
+            pat.set_pass('pat')
+            pat.login = 'pat'
+            pat.account_activated = True
+            pat.save()
+            rv = self.logout()
+            self.assertEquals('200 OK', rv.status)
+            rv = self.login('pat', 'pat')
+            self.assertEquals('200 OK', rv.status)
+            user_link = url_for('userinfo', ids=str(pat.id))
+            rv = self.client.get(user_link)
+            self.assertEquals('200 OK', rv.status)
+            dic = json.loads(rv.data.decode("utf8"))
+            self.assertEquals(dic['success'], True)
+            #test patient access to unauthorized info
+            for intouchable in admin, hw:
+                user_link = url_for('userinfo', ids=str(intouchable.id))
+                rv = self.client.get(user_link)
+                self.assertEquals('401 UNAUTHORIZED', rv.status)
+                dic = json.loads(rv.data.decode("utf8"))
+                self.assertEquals('Access denied to requested ressource', dic['error'])
+
+    def test_black_list(self):
+        from labresult.lib.auth import black_list, is_black_listed
+        with labresult.app.test_request_context():
+            for x in range(19):
+                self.assertFalse(black_list("login"))
+                self.assertFalse(is_black_listed())
+            self.assertTrue(black_list("login"))
+            self.assertTrue(is_black_listed())
+            FailedLogin.objects().delete()
+            for x in range(19):
+                self.login("bad","login")
+                self.assertFalse(is_black_listed())
+            self.login("bad","login")
+            self.assertTrue(is_black_listed())

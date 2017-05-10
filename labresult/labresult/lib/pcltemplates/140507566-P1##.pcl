@@ -1,0 +1,101 @@
+E(1F&k2G(1F&l1H&n11WdLetterhead&l7C&a200CType=%(Type)s;npat=%(npat)s;nSS=%(nSS)s   ;nmob=                  ;tel=%(tel)s    ;cmed=%(cmed)s;suf=          ;
+&a200Cpfx=%(pfx)s ;pnom=%(pnom)s            ;prn=%(prn)s             ;ad1=%(ad1)s                         ;datedos=%(datedos)s;
+&a200Cad2=%(ad2)s                         ;ad3=%(ad3)s               ;numdos=%(numdos)s ;ddn=%(ddn)s;
+&a200Cnommed=%(nommed)s                    ;ccor=        ;nomcor=                                        ;age=%(age)s  ;
+&a200Ctdu=       ;cprl=%(cprl)s     ;nprl=%(nprl)s               ;tprl=                ;
+&a-5R(s0p10h12v0s0b3T(1F                                            %(numdos)s (s0p16h8.v0s0b3T(1F -%(datedos)s-          -p1/2  (s0p10h12v0s0b3T(1F 
+
+
+
+
+
+&a12R                                  
+                                          %(pfx)s  %(pnom)s %(prn)s         
+                                          NJF:                    
+                                          %(ad1)s                         
+  %(nommed)s                    %(ad2)s                         
+  28, rue Jean Moulin                     
+  %(ad2)s                         
+                                                 Besan\on, le%(datedos)s @13H31
+  Dossier N[%(numdos)s du(s0p10h12v0s3b3T(1F %(datedos)s                                         (s0p10h12v0s0b3T(1F 
+
+
+    (s1p16v0s4101T(1F                                   H E M A T O L O G I E           (s0p10h12v0s0b3T(1F
+   (s0p16h8.v0s0b3T(1F                                               (Beckman Coulter HMX)                    (s0p10h12v0s0b3T(1F
+                                                         (s0p16h8.v0s0b3T(1F  R{f{rence           Ant{rieurs        (s0p10h12v0s0b3T(1F
+   NUMERATION GLOBULAIRE
+                                                                        (s0p16h8.v0s0b3T(1F07/04/14 (s0p10h12v0s0b3T(1F
+     Leucocytes . . . . . . . . .      6.800 /mm3      (s0p16h8.v0s0b3T(1F 4.000 @ 10.000  (s0p10h12v0s0b3T(1F      (s0p16h8.v0s0b3T(1F  6.200 (s0p10h12v0s0b3T(1F
+     H{maties . . . . . . . . . .  3.870.000 /mm3      (s0p16h8.v0s0b3T(1F%(cprl)s00000 @ 5200000 (s0p10h12v0s0b3T(1F     (s0p16h8.v0s0b3T(1F4.000.000 (s0p10h12v0s0b3T(1F
+     H{moglobine. . . . . . . . .       12,1 g%        (s0p16h8.v0s0b3T(1F   12,5 @ 15,5    (s0p10h12v0s0b3T(1F      (s0p16h8.v0s0b3T(1F   12,4 (s0p10h12v0s0b3T(1F
+     H{matocrite. . . . . . . . .       36,8 %         (s0p16h8.v0s0b3T(1F   37,0 @ 47,0    (s0p10h12v0s0b3T(1F      (s0p16h8.v0s0b3T(1F   37,7 (s0p10h12v0s0b3T(1F
+     V.G.M. . . . . . . . . . . .         95 u3        (s0p16h8.v0s0b3T(1F     80 @ 97      (s0p10h12v0s0b3T(1F      (s0p16h8.v0s0b3T(1F     94 (s0p10h12v0s0b3T(1F
+     C.C.M.H. . . . . . . . . . .       32,9 %         (s0p16h8.v0s0b3T(1F   31,0 @ 36,0    (s0p10h12v0s0b3T(1F      (s0p16h8.v0s0b3T(1F   32,9 (s0p10h12v0s0b3T(1F
+     T.C.M.H. . . . . . . . . . .       31,3 uug       (s0p16h8.v0s0b3T(1F   27,0 @ 32,0    (s0p10h12v0s0b3T(1F      (s0p16h8.v0s0b3T(1F   31,0 (s0p10h12v0s0b3T(1F
+
+   (s0p10h12v0s3b3T(1FFORMULE SANGUINE                                                            (s0p10h12v0s0b3T(1F
+
+     Polynucl{aires neutrophiles.   63,8 %   4338/mm3  (s0p16h8.v0s0b3T(1F   1500 @ 7000    (s0p10h12v0s0b3T(1F      (s0p16h8.v0s0b3T(1F 61,7 (s0p10h12v0s0b3T(1F
+     Polynucl{aires {osinophiles.    2,4 %    163/mm3  (s0p16h8.v0s0b3T(1F   inf. @ %(cprl)s0     (s0p10h12v0s0b3T(1F      (s0p16h8.v0s0b3T(1F  2,4 (s0p10h12v0s0b3T(1F
+     Polynucl{aires basophiles. .    0,4 %     27/mm3  (s0p16h8.v0s0b3T(1F   inf. @ 100     (s0p10h12v0s0b3T(1F      (s0p16h8.v0s0b3T(1F  0,5 (s0p10h12v0s0b3T(1F
+     Lymphocytes. . . . . . . . .   23,1 %   1571/mm3  (s0p16h8.v0s0b3T(1F   1500 @ %(cprl)s00    (s0p10h12v0s0b3T(1F      (s0p16h8.v0s0b3T(1F 25,1 (s0p10h12v0s0b3T(1F
+     Monocytes. . . . . . . . . .   10,3 %    700/mm3  (s0p16h8.v0s0b3T(1F    200 @ 1000    (s0p10h12v0s0b3T(1F      (s0p16h8.v0s0b3T(1F 10,3 (s0p10h12v0s0b3T(1F
+ -
+
+
+                                                                        (s0p16h8.v0s0b3T(1F07/04/14 (s0p10h12v0s0b3T(1F
+   NUMERATION DES PLAQUETTES. . .      207.000 /mm3      (s0p16h8.v0s0b3T(1F150.000 @ %(cprl)s0.000 (s0p10h12v0s0b3T(1F   (s0p16h8.v0s0b3T(1F  196.000 (s0p10h12v0s0b3T(1F
+
+     V.M.P.(Volume plaquettaire).        8,4 u3        (s0p16h8.v0s0b3T(1F                  (s0p10h12v0s0b3T(1F      (s0p16h8.v0s0b3T(1F    9,1 (s0p10h12v0s0b3T(1F
+   (s0p16h8.v0s0b3T(1FValeurs de r{f{rence {tablies par age selon CHU d'Angers                                (s0p10h12v0s0b3T(1F
+
+   VITESSE DE SEDIMENTATION
+                                                                        (s0p16h8.v0s0b3T(1F07/04/14 (s0p10h12v0s0b3T(1F
+     1}re heure . . . . . . . . .         23 mm        (s0p16h8.v0s0b3T(1F                  (s0p10h12v0s0b3T(1F      (s0p16h8.v0s0b3T(1F     25 (s0p10h12v0s0b3T(1F
+     2}me heure . . . . . . . . .         38 mm        (s0p16h8.v0s0b3T(1F                  (s0p10h12v0s0b3T(1F      (s0p16h8.v0s0b3T(1F     43 (s0p10h12v0s0b3T(1F
+
+
+    (s1p16v0s4101T(1F                                           B I O C H I M I E       (s0p10h12v0s0b3T(1F
+   (s0p16h8.v0s0b3T(1F                              (Analyseur VITROS 250 -ORTHO-CLINICAL DIAGNOSTICS)        (s0p10h12v0s0b3T(1F
+                                                         (s0p16h8.v0s0b3T(1F  R{f{rence           Ant{rieurs        (s0p10h12v0s0b3T(1F
+                                                                        (s0p16h8.v0s0b3T(1F07/04/14 (s0p10h12v0s0b3T(1F
+   CREATININE . . . . . . . . . .        8,0 mg/l      (s0p16h8.v0s0b3T(1F    6,0 @ 10,0    (s0p10h12v0s0b3T(1F      (s0p16h8.v0s0b3T(1F    7,0 (s0p10h12v0s0b3T(1F
+                                       70,80 umol/l    (s0p16h8.v0s0b3T(1F  53,10 @ 88,50   (s0p10h12v0s0b3T(1F
+    (s0p16h8.v0s0b3T(1FTechnique enzymatique r{actifs ORTHO calibr{s/meth.de r{f.IDMS sur VITROS350 (s0p10h12v0s0b3T(1F
+   Clairance cr{atinine MDRD           68,34 ml/mn
+
+(s0p16h8.v0s0b3T(1F (s0p10h12v0s0b3T(1F     
+                                               &a69R&a58C(s0p16h8.v0s0b3T(1F r{sultats RECTOVERSO(s0p10h12v0s0b3T(1F 
+&a71R&a10C(s0p16h8.v0s0b3T(1F (s0p10h12v0s0b3T(1F &a71R&a33.5C(s0p16h8.v0s0b3T(1F Biologiste M{dical(s0p10h12v0s0b3T(1F &a71R&a61C(s0p16h8.v0s0b3T(1F J.ALMARCHA(s0p10h12v0s0b3T(1F 
+(s0p16h8.v0s0b3T(1F Dossier n[ %(numdos)s  du %(datedos)s %(pfx)s  %(pnom)s %(prn)s                    n{(e) le :: 30/05/29(s0p10h12v0s0b3T(1F 
+
+
+    (s1p16v0s4101T(1F                         I M M U N O - E N Z Y M O L O G I E       (s0p10h12v0s0b3T(1F
+                                                         (s0p16h8.v0s0b3T(1F  R{f{rence           Ant{rieurs        (s0p10h12v0s0b3T(1F
+
+                                                                        (s0p16h8.v0s0b3T(1F23/01/14 (s0p10h12v0s0b3T(1F
+   FERRITINE. . . . . . . . . . .         60 ug/l      (s0p16h8.v0s0b3T(1F     50 @ 204     (s0p10h12v0s0b3T(1F      (s0p16h8.v0s0b3T(1F     68 (s0p10h12v0s0b3T(1F
+    (s0p16h8.v0s0b3T(1F(*) Technique E.I.A. avec r{actif ABBOTT sur Architect (s0p10h12v0s0b3T(1F
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(s0p16h8.v0s0b3T(1F (s0p10h12v0s0b3T(1F     
+                                           &a69R&a58C(s0p16h8.v0s0b3T(1F r{sultats RECTOVERSO(s0p10h12v0s0b3T(1F 
+&a71R&a10C(s0p16h8.v0s0b3T(1F (s0p10h12v0s0b3T(1F &a71R&a33.5C(s0p16h8.v0s0b3T(1F Biologiste M{dical(s0p10h12v0s0b3T(1F &a71R&a61C(s0p16h8.v0s0b3T(1F J.ALMARCHA(s0p10h12v0s0b3T(1F               &a200Cff##

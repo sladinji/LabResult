@@ -1,0 +1,52 @@
+{% extends 'admin/master.html' %}
+{% block body %}
+<div class="panel panel-default margB10">
+  <div class="panel-heading txt20">
+	<span class="glyphicon glyphicon-user" aria-hidden="true"></span> <span class="tbleuLR">{{current_user.name}}</span>, bienvenue sur votre espace personnel
+  </div>
+</div>
+{% block result_access %}
+<div class="row">
+  <div class="col-md-12 col-sm-12">
+    <div class="panel panel-success norad margB10">
+      <div class="panel-heading norad txtmajus txt20 pad10">
+        <span class="flaticon-folder240 txt30"></span> Accès à mes résultats
+      </div>
+      <div class="panel-body norad">
+        <div ng-app="LabApp">
+        {%- if current_user.last_result() -%}
+          <div class="row">
+	    <div class="col-md-6">
+	      <button type="button" class="btn btn-success btn-block txt18" ng-controller="ImagesModalCtrl" ng-click="show_modal_images('{{current_user.last_result()}}')">
+		<span class="menuic flaticon-text32"></span> Voir mon dernier Résultat
+	      </button>
+	    </div>
+	    <div class="col-md-6">
+	      <a href="/mesdocuments/" class="btn btn-info btn-block txt18">
+		  <span class="menuic flaticon-drawer4"></span> Liste de mes Documents
+	      </a>
+	    </div>
+	  </div>
+        {%- else -%}
+          <h4>
+	    <span class="glyphicon glyphicon-alert"></span> Pas de résultat disponible, si vous attendez un résultat, il est peut être en cours de traitement.
+	  </h4>
+        {%- endif -%}
+        </div> <!-- end div ng-app -->
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+<div class="row">
+  <div class="col-md-6 col-sm-6">
+    <h4 class="TTbleu txtmajus"><span class="flaticon-microscope23 nomargin txt30"></span> Message de votre Laboratoire</h4>
+    <p class="txtjusti">Votre laboratoire mets à disposition ce dispositif pour simplifier l'accès à vos résultats d'analyses. La procédure d'accès pour se connecter au service respecte toutes les recommendations de la CNIL. Vos identifiants de connexion ne doivent être communiqués à personne. En cas de perte de vos identifiants, veuillez recommencer la procédure d'identification à l'aide du numéro de téléphone ou de l'adresse email que vous avez transmis au laboratoire.</p>
+  </div>
+  <div class="col-md-6 col-sm-6">
+    <h4 class="TTvert txtmajus"><span class="flaticon-responsive2 txt30"></span> L'application LabMobile</h4>
+    <p class="txtjusti">Vous pouvez également accéder à vos résultats via notre application mobile disponible sur Android ou sur iOS et bénéficier de fonctionnalités supplémentaires :</p>
+    <a class="pull-left btn btn-success" href="/static/LabMobile-0.1.apk"><i class="flaticon-android2"></i> LabMobile pour Android</a>
+  </div>
+</div>
+{% endblock %}

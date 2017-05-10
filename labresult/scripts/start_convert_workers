@@ -1,0 +1,4 @@
+#!/bin/bash
+# Start workers only for conversion queue
+
+./bin/python runcelery.py conf=dev worker -l INFO -n conversion --concurrency=3 -Q for_conversion

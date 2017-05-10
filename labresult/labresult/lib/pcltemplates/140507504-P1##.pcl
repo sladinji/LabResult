@@ -1,0 +1,41 @@
+E(1F&k2G(1F&l1H&n11WdLetterhead&l7C&a200CType=%(Type)s;npat=%(npat)s;nSS=%(nSS)s   ;nmob=%(nmob)s    ;tel=%(tel)s    ;cmed=%(cmed)s;suf=          ;
+&a200Cpfx=%(pfx)s;pnom=%(pnom)s           ;prn=%(prn)s              ;ad1=%(ad1)s                   ;datedos=%(datedos)s;
+&a200Cad2=%(ad2)s                       ;ad3=                                        ;numdos=%(numdos)s ;ddn=%(ddn)s;
+&a200Cnommed=%(nommed)s        ;ccor=        ;nomcor=                                        ;age=%(age)s  ;
+&a200Ctdu=       ;cprl=       ;nprl=                              ;tprl=                ;
+&a-5R(s0p10h12v0s0b3T(1F                                            %(numdos)s (s0p16h8.v0s0b3T(1F -%(datedos)s-          -p1/1  (s0p10h12v0s0b3T(1F 
+
+
+
+
+
+&a12R                                  
+                                          %(pfx)s %(pnom)s %(prn)s         
+                                          %(ad1)s
+                                          %(ad2)s                       
+  %(nommed)s        
+  %(adm1)s
+  %(adm2)s
+                                          Besan\on, le %(datedos)s
+  Dossier N[%(numdos)s du(s0p10h12v0s3b3T(1F %(datedos)s                                         (s0p10h12v0s0b3T(1F 
+
+
+    (s1p16v0s4101T(1F                         CHIMIE DES URINES  (sur {chantillon)      (s0p10h12v0s0b3T(1F
+
+   GLYCOSURIE . . . . . . . . . .    Absence
+
+   PROTEINURIE . . . . . . . . .     Absence
+    (s0p16h8.v0s0b3T(1FBandelettes Combur-Test Roche-Dosage sur plaque Vitros UPRO-OrthoClinicalDiagnostic (s0p10h12v0s0b3T(1F
+
+
+
+
+
+
+
+
+
+
+(s0p16h8.v0s0b3T(1F (s0p10h12v0s0b3T(1F     
+                                           &a69R&a58C(s0p16h8.v0s0b3T(1F r{sultats RECTOVERSO(s0p10h12v0s0b3T(1F 
+&a71R&a10C(s0p16h8.v0s0b3T(1F (s0p10h12v0s0b3T(1F &a71R&a33.5C(s0p16h8.v0s0b3T(1F Biologiste M{dical(s0p10h12v0s0b3T(1F &a71R&a61C(s0p16h8.v0s0b3T(1F L.PASTEUR(s0p10h12v0s0b3T(1F               &a200Cff##

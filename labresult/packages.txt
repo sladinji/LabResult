@@ -1,0 +1,3 @@
+pyvenv
+python3-dev
+pcl6 # ghostpcl

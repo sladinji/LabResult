@@ -1,0 +1,22 @@
+{% extends 'admin/model/list_custo.html' %}
+
+{% block body %}
+<div class="panel panel-default margB10">
+  <div class="panel-heading txt20">
+      <i class="flaticon-multiple25"></i><span class="tbleuLR"> Consulter la liste des groupes</span>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12 col-sm-12">
+    <h4 class="TTbleu txtmajus"><span class="flaticon-info28 nomargin txt30"></span> A quoi sert un groupe ?</h4>
+  </div>
+  <div class="col-md-6 col-sm-6">
+      <p class="txtjusti">Un groupe permet à plusieurs professionnels de santé de <span class="txtgras">partager les documents</span> auxquels ils ont accès. Ceci permet par exemple de <span class="txtgras">faciliter le travail du personnel des hôpitaux ou des maisons de retraite</span>. Une fois le groupe créé, rechercher les utilisateurs que vous voulez ajouter au groupe, et faîtes le en éditant les propriétés de l'utilisateur. <span class="txtgras">Un utilisateur peut faire partie de plusieurs groupes</span>.
+  </div>
+  <div class="col-md-6 col-sm-6 txtcenter txtgrisf">
+    <span class="flaticon-multiple25 nomargin txt60"></span>
+  </div>
+</div>
+{{ super()  }}
+  <!-- Content ends -->
+{% endblock %}

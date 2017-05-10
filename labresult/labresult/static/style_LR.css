@@ -1,0 +1,87 @@
+/*  ===================================================
+ * Copyright 2015 Labo Result - Tous droits réservés
+ * =================================================== */
+/* Styles Général */
+html {position: relative;min-height: 100%;}
+body {padding: 0px; font-family: "Arial",Arial,sans-serif;}
+h1, h2, h3, h4, h5, h6 {margin:0;}
+a {color: #1171a3;text-decoration: none;}
+li {color: #1171a3;}
+/* Couleurs Labo */
+.bbleuLR{background-color:#00a2d2 !important;}
+.tbleuLR{color:#00a2d2 !important;}
+.bleuf}{color:#1171a3 !important;}
+.bgrisLR{background-color:#59585b !important;}
+.tgrisLR{color:#59585b !important;}
+/* Styles perso */
+.txtnoir{color:#000000 !important;}
+.txtblanc{color:#ffffff !important;}
+.txtred{color:#ff0000 !important;}
+.txtvert{color:#00ff00 !important;}
+.txtgras{font-weight: bold !important;}
+.txtcenter{ text-align:center !important;}
+.txtjusti{ text-align: justify !important;}
+.txtright{ text-align:right !important;}
+.txtleft{ text-align:left !important;}
+.bgblanc{background-color: #ffffff !important;}
+.pad10{padding: 10px;}
+.padR5{padding-right: 5px;}
+.margR5{margin-right: 5px;}
+.margT10{margin-top: 10px;}
+.radHB5{border-radius:5px 0px;}
+.radHB10{border-radius:10px 0px;}
+.radHB20{border-radius:20px 0px;}
+.radBH10{border-radius:0px 10px;}
+
+/* Hedear Menu Principal */
+.logo{height:80px;width:291px; background: transparent url('../img/Logo_LabResult_site.png') no-repeat top left;}
+.navbar-brand{height:100px;padding: 10px 0px;margin-left: 0px !important;}
+.navbar-fixed-top {margin: 0px 0px 0px 0px;border-bottom: 1px solid #cbcbcb;}
+#menugeneral{padding: 10px 0px;margin-right: 0px !important;}
+#menugeneral li a{height:80px;min-width: 80px;background-color:#00a2d2 !important;padding: 5px 10px !important;margin: 0 2px;text-align: center;font-size: 16px;color:#ffffff !important;}
+#menugeneral span.glyphicon{margin: 18px auto 10px;font-size: 24px;}
+#menugeneral li.active a{background-color: #1171a3 !important;}
+#menugeneral li a:hover{background-color: #1171a3 !important;}
+#menugeneral .sous-menu ul{background-color:#e5e5e5 !important;padding: 0px !important;}
+#menugeneral .sous-menu li a{height:30px;min-width: 100px;background-color:#ffffff !important;padding: 5px 10px !important;margin: 0 2px;text-align: left;font-size: 16px;color:#59585b !important;border-bottom: 1px solid #cbcbcb;}
+#menugeneral .sous-menu li a:hover{background-color: #00a2d2 !important;color:#ffffff !important;}
+.page-heading {background: url("../img/heading-backG.png") repeat scroll 0 0 rgba(0, 0, 0, 0) !important;padding: 25px 0;}
+.page-heading .heading-meta {font-size: 22px;line-height: 35px;}
+
+/* Menu Haut et Boutons Social */
+.social a {color: #fff;display: inline-block;height: 24px;line-height: 24px;margin: 0 3px;text-align: center;width: 24px;}
+.slidepanel {background-color: #e5e5e5; border-bottom: 1px solid #cbcbcb; margin: 100px 0px 0px 0px;}
+.slidepanel .social {float: right;}
+.slidepanel .spara {padding: 10px 0;}
+.slidepanel p {font-size: 13px;margin: 0;}
+.slidepanel p i {margin-right: 5px;}
+.social {padding: 7px 0;}
+.social a {color: #fff;display: inline-block;height: 24px;line-height: 24px;margin: 0 3px;text-align: center;width: 24px;}
+.fa {display: inline-block;font-family: FontAwesome;font-style: normal;font-weight: normal;line-height: 1;}
+
+/* Les couleurs des Boutons Social */
+.bbleuFB {background-color: #3a5795 !important;border: 0 none !important;color: #fff !important;}
+.bbleuLI {background-color: #0073b2 !important;border: 0 none !important;color: #fff !important;}
+.bbleuclairTW {background-color: #52b9e9 !important;border: 0 none !important;color: #fff !important;}
+.borange {background-color: #f88529 !important;border: 0 none !important;color: #fff !important;}
+.brougeGP {background-color: #d64438 !important;border: 0 none !important;color: #fff !important;}
+.bred {background-color: #fa3031 !important;border: 0 none !important;color: #fff !important;}
+
+/* Partie Principale */
+#lecontenu{ margin: 10px 0px; border:1px solid #cbcbcb;}
+
+/* Menu Footer */
+.footer {bottom: 0;width: 100%; background-color: #f5f5f5;border-top: 1px solid #cbcbcb;}
+.footer h4 {border-bottom: 1px solid #cbcbcb;color: #666;margin-bottom: 8px;padding-bottom: 8px;}
+.footer hr {margin-bottom: 4px !important;margin-top: 4px !important;}
+.footer ul{ margin-left: 10px; padding-left: 15px;}
+.footer li{ margin-bottom: 10px;}
+.footer ul li {list-style-image:url('../img/liste.png');}
+#copyright{border-top: 1px solid #cbcbcb;}
+
+/* Responsive Plus */
+@media (max-width: 768px) {
+    .navbar-brand{height:60px;}
+    .logo{height:40px !important;width:146px !important;background: transparent url('../img/Logo_LabResult_site2.png') no-repeat top left;}
+    .slidepanel {margin: 60px 0px 0px 0px;}
+}
