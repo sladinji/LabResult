@@ -27,7 +27,9 @@ services:
       - LETSENCRYPT_HOST=demo.labresult.fr
       - LETSENCRYPT_EMAIL=julien.almarcha@labresult.fr
       - VIRTUAL_PORT=5000
-      - VIRTUAL_PROTO=uwsgi
+#      - VIRTUAL_PROTO=uwsgi
+    command: python labresult/run.py dev
+      
 
   lr_worker:
     image: labresult_lr_web

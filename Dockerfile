@@ -23,12 +23,12 @@ ADD labresult_pdfparser /labresult/labresult_pdfparser
 
 # install packages
 WORKDIR /labresult
-RUN cd labresult && python setup.py develop
-RUN cd labresult_admin && python setup.py develop
-RUN cd labresult_pclparser && python setup.py develop
-RUN cd labresult_allmysms && python setup.py develop
-RUN cd labresult_demo && python setup.py develop
-RUN cd labresult_pdfparser && python setup.py develop
+RUN cd labresult && python setup.py install
+RUN cd labresult_admin && python setup.py install
+RUN cd labresult_pclparser && python setup.py install
+RUN cd labresult_allmysms && python setup.py install
+RUN cd labresult_demo && python setup.py install
+RUN cd labresult_pdfparser && python setup.py install
 
 # finally remove dev library after library creation
 RUN apt remove -y --purge python3-dev build-essential zlib1g-dev libjpeg-dev libxslt-dev libxml2-dev
